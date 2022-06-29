@@ -50,16 +50,17 @@ function adminLog(event) {
             if (result.advisor.hasOwnProperty("email")) {
                 localStorage.setItem("adminLogin", JSON.stringify(result));
                 window.location.href = "dashboard.html";
-            }else {
-                Swal.fire({
-                    icon: 'warning',
-                    text: 'login unsuccessful',
-                    confirmButtonColor: '#25067C'
-                });
-                spinRoll.style.display = "none";
             }
         })
-        .catch(error => console.log('error', error));
+        .catch(error => {
+            console.log('error', error)
+            Swal.fire({
+                icon: 'warning',
+                text: 'username or password is incorrect',
+                confirmButtonColor: '#25067C'
+            })
+            spinRoll.style.display = "none";
+        });
     }
 }
 
@@ -92,7 +93,7 @@ setTimeout(function destroyCookie() {
         }
     })
     .catch(error => console.log('error', error));
-}, 100000);
+}, 300000);
 
 // function to get dashboard api
 // dashboard api 
@@ -161,12 +162,12 @@ function getSchedule() {
         result.map((item) => {
             adData += `
                     <tr>
+                    <td>${item.date}</td>
                     <td>${item.name}</td>
                     <td>${item.email}</td>
                     <td>${item.phone_number}</td>
                     <td>${item.course_interested_in}</td>
-                    <td>${item.schedule}</td>
-                    <td>${item.date}</td>
+                    <td>${item.schedule_time}</td>
                     <td>${item.time}</td>
                     <td><button class="re-btn" onclick="rescheduleTime(${item.id})">Reschedule</button></td>
                     <td><a href="view.html?id=${item.id}"><button class="upd">View me</button></a></td>
@@ -175,6 +176,7 @@ function getSchedule() {
                         </button>
                     </td>
                     <td><a href="https://wa.me/234${item.phone_number}"><i class='fab fa-whatsapp' style='color:#0e8115; font-size: 30px;'></i></a></td>
+                    <td><button class="upstate-btn" onclick="updateModal(${item.id})">Edit Advisory</button></td>
                     </tr>
                 `
             const myTable = document.querySelector(".tableindex");
@@ -185,6 +187,169 @@ function getSchedule() {
     .catch(error => console.log('error', error));
 }
 getSchedule();
+
+// function to open modal to update advisory details
+function updateModal(upId) {
+
+    const upMode = document.getElementById("up-modal");
+    upMode.style.display = "block";
+
+    localStorage.setItem("updateId", upId);
+    const name = document.getElementById("name");
+    const email = document.getElementById("email");
+    const phone = document.getElementById("phone");
+    const interest = document.getElementById("interest");
+    const taken = document.getElementById("taken");
+    const mode = document.getElementById("mode");
+    const reason = document.getElementById("reason");
+    const scheduleDate = document.getElementById("schedule");
+    const scheduleTime = document.getElementById("time");
+    const location = document.getElementById("location");
+    const job = document.getElementById("job");
+    const status = document.querySelector(".status");
+    const comment = document.querySelector(".comment");
+
+
+    const upReq = {
+        method: 'GET'
+    };
+
+    const url = `https://pluralcode.academy/pluralcode_payments/api/get_advisory_details?id=` + `${upId}`;
+    fetch(url, upReq)
+    .then(response => response.json())
+    .then(result => {
+        console.log(result)
+        name.setAttribute("value", `${result.name}`);
+        email.setAttribute("value", `${result.email}`);
+        phone.setAttribute("value", `${result.phone_number}`);
+        interest.setAttribute("value", `${result.course_interested_in}`);
+        taken.setAttribute("value", `${result.taken_any_course_before}`);
+        mode.setAttribute("value", `${result.mode_of_learning}`);
+        reason.setAttribute("value", `${result.reason_for_learning}`);
+        // scheduleDate.setAttribute("value", `${result.schedule}`);
+        // scheduleTime.setAttribute("value", `${result.time}`);
+        location.setAttribute("value", `${result.location}`);
+        job.setAttribute("value", `${result.current_job}`);
+        status.setAttribute("selected", `${result.status}`);
+        comment.value = `${result.advisor_feedback}`;
+
+
+    })
+    .catch(error => console.log('error', error));
+}
+
+// close modal for update advisory detals
+function upModal() {
+    const upMode = document.getElementById("up-modal");
+    upMode.style.display = "none";
+}
+
+// function to update advisory
+function updateStatus(event) {
+    event.preventDefault();
+
+    const upName = document.getElementById("name").value;
+    const upEmail = document.getElementById("email").value;
+    const upPhone = document.getElementById("phone").value;
+    const upAge = document.getElementById("age").value;
+    const upInterest = document.getElementById("interest").value;
+    const upTaken = document.getElementById("taken").value;
+    const upMode = document.getElementById("mode").value;
+    const upReason = document.getElementById("reason").value;
+    const upScheduleDate = document.getElementById("schedule").value;
+    const upScheduleTime = document.getElementById("time");
+    const upLocation = document.getElementById("location").value;
+    const upJob = document.getElementById("job").value;
+    const upStatus = document.querySelector(".status").value;
+    const upComment = document.querySelector(".comment").value;
+
+    // console.log(upScheduleTime);
+    let timeSplit = upScheduleTime.value.split(':'),hours,minutes,meridian;
+    hours = timeSplit[0];
+    minutes = timeSplit[1];
+    if (hours > 12) {
+        meridian = 'PM';
+        hours -= 12;
+    }else if (hours < 12) {
+        meridian = 'AM';
+        if (hours == 0) {
+            hours = 12;
+        }else {
+            meridian = 'PM';
+        }
+    }
+
+    let newTime = hours + ':' + minutes + meridian;
+
+
+    if (upName === "" || upEmail === "" || upPhone === "" || upAge === "" || upInterest === "" || upTaken === "" || upMode === "" || upReason === "" || newTime === "" || upLocation === "" || upJob === "" || upStatus === "" || upComment === "") {
+        Swal.fire({
+            icon: 'info',
+            text: 'All fields are required',
+            confirmButtonColor: '#25067C'
+        })
+    }
+
+    else {
+        const updash = localStorage.getItem("adminLogin");
+        const updash2 = JSON.parse(updash);
+        const updash3 = updash2.token;
+
+        const upMyId = localStorage.getItem("updateId");
+
+        const upHead = new Headers();
+        upHead.append("Authorization", `Bearer ${updash3}`);
+
+        const upForm = new FormData();
+        upForm.append("name", upName);
+        upForm.append("email", upEmail);
+        upForm.append("phone_number", upPhone);
+        upForm.append("age", upAge);
+        upForm.append("course_interested_in", upInterest);
+        upForm.append("taken_any_course_before", upTaken);
+        upForm.append("mode_of_learning", upMode);
+        upForm.append("reason_for_learning", upReason);
+        upForm.append("date", upScheduleDate);
+        upForm.append("time", newTime);
+        upForm.append("id", upMyId);
+        upForm.append("location", upLocation);
+        upForm.append("current_job", upJob);
+        upForm.append("status", upStatus);
+        upForm.append("keynotes", upComment);
+
+        const upMyReq = {
+            method: 'POST',
+            headers: upHead,
+            body: upForm
+        };
+
+        const url = "https://pluralcode.academy/pluralcode_payments/api/advisor/update_advisory_details";
+        fetch(url, upMyReq)
+        .then(response => response.json())
+        .then(result => {
+            console.log(result)
+            if (result.status === "success") {
+                Swal.fire({
+                    icon: 'success',
+                    text: `${result.message}`,
+                    confirmButtonColor: '#25067C'
+                })
+                setTimeout(()=> {
+                    location.reload();
+                }, 3000);
+            }
+            else {
+                Swal.fire({
+                    icon: 'info',
+                    text: 'Unsuccessful',
+                    confirmButtonColor: '#25067C'
+                })
+            }
+        })
+        .catch(error => console.log('error', error));
+    }
+
+}
 
 // function to getAdvisory details
 function getAdvisoryDetails() {
@@ -302,9 +467,27 @@ function closehModal() {
 function assignTimeSlot(event) {
     event.preventDefault();
 
-    const setTime = document.querySelector(".myDate").value;
-    console.log(setTime);
-    if (setTime === "") {
+    const setDate = document.querySelector(".myDate").value;
+    const setTime = document.querySelector(".myTime");
+
+    let timeSplit = setTime.value.split(':'),hours,minutes,meridian;
+    hours = timeSplit[0];
+    minutes = timeSplit[1];
+    if (hours > 12) {
+        meridian = 'PM';
+        hours -= 12;
+    }else if (hours < 12) {
+        meridian = 'AM';
+        if (hours == 0) {
+            hours = 12;
+        }else {
+            meridian = 'PM';
+        }
+    }
+
+    let newTime = hours + ':' + minutes + meridian;
+
+    if (setDate === "" || newTime === "") {
         Swal.fire({
             icon: 'info',
             text: 'Please enter a date',
@@ -323,7 +506,8 @@ function assignTimeSlot(event) {
 
         const reForm = new FormData();
         reForm.append("id", getId);
-        reForm.append("datetime", setTime);
+        reForm.append("date", setDate);
+        reForm.append("time", newTime);
 
         const reReq = {
             method: 'POST',
@@ -1019,18 +1203,21 @@ function searchAdbyName(event) {
                 result.map((item) => {
                     nameData += `
                     <tr>
-                        <td>${item.name}</td>
-                        <td>${item.email}</td>
-                        <td>${item.phone_number}</td>
-                        <td>${item.course_interested_in}</td>
-                        <td>${item.schedule}</td>
-                        <td>${item.date}</td>
-                        <td>${item.time}</td>
-                        <td><a href="view.html?id=${item.id}"><button class="upd">View me</button></a></td>
-                        <td><button class="${item.status} adBtn">
-                            ${item.status}
-                            </button>
-                        </td>
+                    <td>${item.date}</td>
+                    <td>${item.name}</td>
+                    <td>${item.email}</td>
+                    <td>${item.phone_number}</td>
+                    <td>${item.course_interested_in}</td>
+                    <td>${item.schedule}</td>
+                    <td>${item.time}</td>
+                    <td><button class="re-btn" onclick="rescheduleTime(${item.id})">Reschedule</button></td>
+                    <td><a href="view.html?id=${item.id}"><button class="upd">View me</button></a></td>
+                    <td><button class="${item.status} adBtn">
+                        ${item.status}
+                        </button>
+                    </td>
+                    <td><a href="https://wa.me/234${item.phone_number}"><i class='fab fa-whatsapp' style='color:#0e8115; font-size: 30px;'></i></a></td>
+                    <td><button class="upstate-btn" onclick="updateModal(${item.id})">Edit Advisory</button></td>
                     </tr>
                     `
                     myTable.innerHTML = nameData;
@@ -1097,19 +1284,23 @@ function searchTheDate(event) {
             else {
                 result.map((item) => {
                     daData += 
-                   `<tr>
-                        <td>${item.name}</td>
-                        <td>${item.email}</td>
-                        <td>${item.phone_number}</td>
-                        <td>${item.course_interested_in}</td>
-                        <td>${item.schedule}</td>
-                        <td>${item.date}</td>
-                        <td>${item.time}</td>
-                        <td><a href="view.html?id=${item.id}"><button class="upd">View me</button></a></td>
-                        <td><button class="${item.status} adBtn">
-                            ${item.status}
-                            </button>
-                        </td>
+                   `
+                   <tr>
+                    <td>${item.date}</td>
+                    <td>${item.name}</td>
+                    <td>${item.email}</td>
+                    <td>${item.phone_number}</td>
+                    <td>${item.course_interested_in}</td>
+                    <td>${item.schedule}</td>
+                    <td>${item.time}</td>
+                    <td><button class="re-btn" onclick="rescheduleTime(${item.id})">Reschedule</button></td>
+                    <td><a href="view.html?id=${item.id}"><button class="upd">View me</button></a></td>
+                    <td><button class="${item.status} adBtn">
+                        ${item.status}
+                        </button>
+                    </td>
+                    <td><a href="https://wa.me/234${item.phone_number}"><i class='fab fa-whatsapp' style='color:#0e8115; font-size: 30px;'></i></a></td>
+                    <td><button class="upstate-btn" onclick="updateModal(${item.id})">Edit Advisory</button></td>
                     </tr>
                     `
                      myTable2.innerHTML = daData;
@@ -1124,13 +1315,21 @@ function searchTheDate(event) {
 
 // funtion to show courses for interest
 function courses3() {
+    const coDet = localStorage.getItem("adminLogin");
+    const coLog = JSON.parse(coDet);
+    const coTok = coLog.token;
+        
+    const coHeader = new Headers();
+    coHeader.append("Authorization", `Bearer ${coTok}`);
+
     const coReq = {
-        method: 'GET'
+        method: 'GET',
+        headers: coHeader
     };
 
     let coData = [];
 
-    const url = "https://pluralcode.academy/pluralcode_payments/api/getcourses";
+    const url = "https://pluralcode.academy/pluralcode_payments/api/advisor/advisor_courses";
     fetch(url, coReq)
     .then(response => response.json())
     .then(result => {
@@ -1187,22 +1386,26 @@ function visorCourse(event) {
         }
         else {
             result.map((item) => {
-                `<tr>
-                    <td>${item.name}</td>
-                    <td>${item.email}</td>
-                    <td>${item.phone_number}</td>
-                    <td>${item.course_interested_in}</td>
-                    <td>${item.schedule}</td>
-                    <td>${item.date}</td>
-                    <td>${item.time}</td>
-                    <td><a href="view.html?id=${item.id}"><button class="upd">View me</button></a></td>
-                    <td><button class="${item.status} adBtn">
-                        ${item.status}
-                        </button>
-                    </td>
-                </tr>
+               Data += `
+               <tr>
+               <td>${item.date}</td>
+               <td>${item.name}</td>
+               <td>${item.email}</td>
+               <td>${item.phone_number}</td>
+               <td>${item.course_interested_in}</td>
+               <td>${item.schedule}</td>
+               <td>${item.time}</td>
+               <td><button class="re-btn" onclick="rescheduleTime(${item.id})">Reschedule</button></td>
+               <td><a href="view.html?id=${item.id}"><button class="upd">View me</button></a></td>
+               <td><button class="${item.status} adBtn">
+                   ${item.status}
+                   </button>
+               </td>
+               <td><a href="https://wa.me/234${item.phone_number}"><i class='fab fa-whatsapp' style='color:#0e8115; font-size: 30px;'></i></a></td>
+               <td><button class="upstate-btn" onclick="updateModal(${item.id})">Edit Advisory</button></td>
+               </tr>
                     `
-                    myTable2.innerHTML = daData;
+                    myTable2.innerHTML = Data;
                     myModal.style.display = "none";
             })
         }

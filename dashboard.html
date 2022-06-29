@@ -80,7 +80,8 @@
                 <div class="modal-body">
                     <form>
                         <label for="">Set date & time</label>
-                        <input type="datetime-local" name="myDate" class="mb-2 form-control myDate">
+                        <input type="date" name="myDate" class="mb-2 form-control myDate">
+                        <input type="time" name="myDate" class="mb-2 form-control myTime">
                         <center>
                           <button class="se-btn" onclick="assignTimeSlot(event)">Reschedule</button>
                         </center>
@@ -156,17 +157,18 @@
                     <table class="table">
                         <thead>
                             <tr>
+                                <th>Date</th>
                                 <th>Student Name</th>
                                 <th>Email Address</th>
                                 <th>Phone Number</th>
                                 <th>Course of interest</th>
-                                <th>Schedule</th>
-                                <th>Date</th>
+                                <th>Schedule session</th>
                                 <th>Time</th>
                                 <th>Reschedule</th>
                                 <th>Details</th>
                                 <th>Status</th>
                                 <th>Whatsapp</th>
+                                <th>Edit Advisory</th>
                             </tr>
                         </thead>
                         <tbody class="tableindex">
@@ -177,7 +179,48 @@
             </div>
           </div>
 
-          
+          <div id="up-modal" class="mymodal mb-5">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 class="text-center">Update Details</h3>
+                    <span class="close" onclick="upModal()">&times;</span>
+                </div>
+                <div class="modal-body">
+                    <form>
+                       <input type="text" id="name" class="form-control mb-4" placeholder="name">
+                       <input type="email" id="email" class="form-control mb-4" placeholder="email">
+                       <input type="tel" id="phone" class="form-control mb-4" placeholder="phone number">
+                       <input type="number" id="age" class="form-control mb-4" placeholder="age">
+                       <input type="text" id="interest" class="form-control mb-4" placeholder="course of interest">
+                       <input type="text" id="taken" class="form-control mb-4" placeholder="Yes or No">
+                       <input type="text" id="mode" class="form-control mb-4" placeholder="physical">
+                       <input type="text" id="reason" class="form-control mb-4" placeholder="promotion">
+                       <h3 class="text-center">Schedule</h3>
+                       <div class="row">
+                           <div class="col-sm-12 col-md-12 col-lg-6">
+                              <input type="date" id="schedule" class="form-control mb-4"> 
+                           </div>
+                           <div class="col-sm-12 col-md-12 col-lg-6">
+                              <input type="time" id="time" class="form-control mb-4">
+                           </div>
+                       </div>
+                       <input type="text" id="location" class="form-control mb-4" placeholder="ikeja">
+                       <input type="text" id="job" class="form-control mb-4" placeholder="banker">
+                       <hr>
+                       <select class="shape status">
+                        <option>..choose status..</option>
+                        <option value="interested">Interested</option>
+                        <option value="not_interested">Not Interested</option>
+                        <option value="unreachable">Unreachable</option>
+                        <option value="undecided">Undecided</option>
+                        </select>
+                        <textarea placeholder="Enter Remarks" class="shape2 comment"></textarea>
+
+                       <button class="my-4 adminBtn" onclick="updateStatus(event)">Update status</button>
+                    </form>
+                </div>
+            </div>
+        </div>
           
        </main>
     </div>

@@ -1109,7 +1109,7 @@ hr {
     border-radius: 6px;
 }
 
-.re-btn {
+.re-btn, .upstate-btn {
     border: 0;
     outline: none;
     box-shadow: none;
@@ -1119,6 +1119,10 @@ hr {
     font-size: 14px;
     cursor: pointer;
     border-radius: 6px;
+}
+
+.upstate-btn {
+    background: #0C1E5B;
 }
 
 .rider {
