@@ -29,6 +29,7 @@ function adminLog(event) {
         if(localStorage.getItem("cookieKey") === null) {
           localStorage.setItem('cookieKey', document.cookie);
         }
+        
 
         const adminData = new FormData();
         adminData.append("email", getEmail);
@@ -50,7 +51,7 @@ function adminLog(event) {
             if (result.advisor.hasOwnProperty("email")) {
                 localStorage.setItem("adminLogin", JSON.stringify(result));
                 window.location.href = "dashboard.html";
-            }
+            }3
         })
         .catch(error => {
             console.log('error', error)
@@ -167,7 +168,7 @@ function getSchedule() {
                     <td>${item.email}</td>
                     <td>${item.phone_number}</td>
                     <td>${item.course_interested_in}</td>
-                    <td>${item.schedule_time}</td>
+                    <td>${item.schedule}</td>
                     <td>${item.time}</td>
                     <td><button class="re-btn" onclick="rescheduleTime(${item.id})">Reschedule</button></td>
                     <td><a href="view.html?id=${item.id}"><button class="upd">View me</button></a></td>
@@ -175,7 +176,7 @@ function getSchedule() {
                         ${item.status}
                         </button>
                     </td>
-                    <td><a href="https://wa.me/234${item.phone_number}"><i class='fab fa-whatsapp' style='color:#0e8115; font-size: 30px;'></i></a></td>
+                    <td><a href="https://wa.me/234${item.phone_number}" target="_blank"><i class='fab fa-whatsapp' style='color:#0e8115; font-size: 30px;'></i></a></td>
                     <td><button class="upstate-btn" onclick="updateModal(${item.id})">Edit Advisory</button></td>
                     </tr>
                 `
@@ -247,6 +248,9 @@ function upModal() {
 // function to update advisory
 function updateStatus(event) {
     event.preventDefault();
+
+    const myModal = document.querySelector(".pagemodal");
+    myModal.style.display = "block";
 
     const upName = document.getElementById("name").value;
     const upEmail = document.getElementById("email").value;
@@ -337,6 +341,7 @@ function updateStatus(event) {
                 setTimeout(()=> {
                     location.reload();
                 }, 3000);
+                myModal.style.display = "none";
             }
             else {
                 Swal.fire({
@@ -344,6 +349,7 @@ function updateStatus(event) {
                     text: 'Unsuccessful',
                     confirmButtonColor: '#25067C'
                 })
+                myModal.style.display = "none";
             }
         })
         .catch(error => console.log('error', error));
@@ -467,6 +473,9 @@ function closehModal() {
 function assignTimeSlot(event) {
     event.preventDefault();
 
+    const myModal = document.querySelector(".pagemodal");
+    myModal.style.display = "block";
+
     const setDate = document.querySelector(".myDate").value;
     const setTime = document.querySelector(".myTime");
 
@@ -529,6 +538,8 @@ function assignTimeSlot(event) {
                 setTimeout(()=> {
                     location.reload();
                 }, 5000);
+
+                myModal.style.display = "none";
             }
             else {
                 Swal.fire({
@@ -536,6 +547,7 @@ function assignTimeSlot(event) {
                     text: 'Unsuccessfull',
                     confirmButtonColor: '#25067C'
                 })
+                myModal.style.display = "none";
             }
         })
         .catch(error => console.log('error', error));
@@ -668,6 +680,8 @@ function courses() {
     let courData = [];
 
     const url = "https://pluralcode.academy/pluralcode_payments/api/getcourses";
+    // const url = "https://pluralcode.academy/pluralcode_payments/api/advisor/advisor_courses";
+
     fetch(url, courReq)
     .then(response => response.json())
     .then(result => {
@@ -857,7 +871,6 @@ function searchDate() {
             result.map((item) => {
                 dateData += `
                     <tr>
-                    <tr>
                         <td>${item.name}</td>
                         <td>${item.email}</td>
                         <td>${item.phone_number}</td>
@@ -865,12 +878,76 @@ function searchDate() {
                         <td>${item.mode_of_learning}</td>
                         <td>${item.course_of_interest}</td>
                     </tr>
-                </tr>
                 `
                 tableInfo.innerHTML = dateData;
                 myModal.style.display = "none";
     
             })
+        }
+    })
+    .catch(error => console.log('error', error));
+}
+
+// function to search advisory by status
+function searchStatusAd() {
+    const myModal = document.querySelector(".pagemodal");
+    myModal.style.display = "block";
+
+    const currentStatus = document.querySelector(".shape").value;
+    const cuTok = localStorage.getItem("adminLogin");
+    const cudk = JSON.parse(cuTok);
+    const cuToken = cudk.token;
+
+    const cuHeader = new Headers();
+    cuHeader.append("Authorization", `Bearer ${cuToken}`);
+
+    const cuForm = new FormData();
+    cuForm.append("status", currentStatus);
+
+    const cuReq = {
+        method: 'POST',
+        headers: cuHeader,
+        body: cuForm
+    };
+
+    let cuData = [];
+
+    const url = "https://pluralcode.academy/pluralcode_payments/api/advisor/advisor_search_advisory_table";
+    fetch(url, cuReq)
+    .then(response => response.json())
+    .then(result => {
+        console.log(result)
+        const cuInfo = document.querySelector(".tableindex");
+        if (result.length === 0) {
+            cuInfo.innerHTML = `
+               <h2 class="text-center">No Records found on this status</h2>
+            `
+            myModal.style.display = "none";
+        }
+        else {
+            result.map((item) => {
+                cuData += `
+                <tr>
+                <td>${item.date}</td>
+                <td>${item.name}</td>
+                <td>${item.email}</td>
+                <td>${item.phone_number}</td>
+                <td>${item.course_interested_in}</td>
+                <td>${item.schedule}</td>
+                <td>${item.time}</td>
+                <td><button class="re-btn" onclick="rescheduleTime(${item.id})">Reschedule</button></td>
+                <td><a href="view.html?id=${item.id}"><button class="upd">View me</button></a></td>
+                <td><button class="${item.status} adBtn">
+                    ${item.status}
+                    </button>
+                </td>
+                <td><a href="https://wa.me/234${item.phone_number}"><i class='fab fa-whatsapp' style='color:#0e8115; font-size: 30px;'></i></a></td>
+                <td><button class="upstate-btn" onclick="updateModal(${item.id})">Edit Advisory</button></td>
+                </tr>
+                `
+                cuInfo.innerHTML = cuData;
+                myModal.style.display = "none";
+           })
         }
     })
     .catch(error => console.log('error', error));
@@ -1231,6 +1308,76 @@ function searchAdbyName(event) {
     
 }
 
+// function for searching for current date
+function searchByToday(event) {
+    event.preventDefault();
+
+    const myModal = document.querySelector(".pagemodal");
+    myModal.style.display = "block";
+
+    const getToday = document.querySelector(".today").value;
+    console.log(getToday);
+
+    const toDet = localStorage.getItem("adminLogin");
+    const toLog = JSON.parse(toDet);
+    const toTok = toLog.token;
+
+    const toHeader = new Headers();
+    toHeader.append("Authorization", `Bearer ${toTok}`);
+    
+    const toForm = new FormData();
+    toForm.append("schedule_date", getToday);
+
+    const toReq = {
+        method: 'POST',
+        headers: toHeader,
+        body: toForm
+    };
+
+    let todayData = [];
+
+    const url = "https://pluralcode.academy/pluralcode_payments/api/advisor/advisor_search_advisory_table";
+    fetch(url, toReq)
+    .then(response => response.json())
+    .then(result => {
+        console.log(result)
+        const myToday = document.querySelector(".tableindex");
+        if (result.length === 0) {
+            myToday.innerHTML = `
+                <h2 class="text-center">No Records found on this course</h2>
+            `
+            myModal.style.display = "none";
+        }
+        else {
+            result.map((item) => {
+                todayData += 
+               `
+               <tr>
+                <td>${item.date}</td>
+                <td>${item.name}</td>
+                <td>${item.email}</td>
+                <td>${item.phone_number}</td>
+                <td>${item.course_interested_in}</td>
+                <td>${item.schedule}</td>
+                <td>${item.time}</td>
+                <td><button class="re-btn" onclick="rescheduleTime(${item.id})">Reschedule</button></td>
+                <td><a href="view.html?id=${item.id}"><button class="upd">View me</button></a></td>
+                <td><button class="${item.status} adBtn">
+                    ${item.status}
+                    </button>
+                </td>
+                <td><a href="https://wa.me/234${item.phone_number}"><i class='fab fa-whatsapp' style='color:#0e8115; font-size: 30px;'></i></a></td>
+                <td><button class="upstate-btn" onclick="updateModal(${item.id})">Edit Advisory</button></td>
+                </tr>
+                `
+                 myToday.innerHTML = todayData;
+                myModal.style.display = "none";
+           })
+        }
+    })
+    .catch(error => console.log('error', error));
+}
+
 // function to get date range
 function searchTheDate(event) {
     event.preventDefault();
@@ -1453,8 +1600,19 @@ function getTheText2(event) {
     console.log(copyText2)
 }
 
+// redirect to login page
+function gotoLoginPage(event) {
+    event.preventDefault();
+
+    window.location.href = "index.html";
+}
+
 // function logout
 function logAdminOut(event) {
+    event.preventDefault();
+
+    const myModal = document.querySelector(".pagemodal");
+    myModal.style.display = "block";
 
     const logDet = localStorage.getItem("adminLogin");
     const delLog = JSON.parse(logDet);
@@ -1480,11 +1638,21 @@ function logAdminOut(event) {
                 text: `${result.message}`,
                 confirmButtonColor: '#25067C'
             })
+
+            setTimeout(()=> {
+                localStorage.clear();
+                window.location.href = "index.html";
+            }, 3000);
+            myModal.style.display = "none";
+        }else {
+            Swal.fire({
+                icon: 'info',
+                text: 'Log out Unsuccessful',
+                confirmButtonColor: '#25067C'
+            })
+            myModal.style.display = "none";
         }
-        setTimeout(()=> {
-            localStorage.clear();
-            window.location.href = "index.html";
-        }, 5000);
+        
     })
     .catch(error => console.log('error', error));
 }

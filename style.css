@@ -649,7 +649,7 @@ hr {
     border-radius: 5px;
 }
 
-.complete, .pending, .un-paid, .interested, .unreachable, .active, .dele-btn, .assigned, .undecided{
+.complete, .pending, .un-paid, .interested, .unreachable, .active, .dele-btn, .assigned, .undecided, .not_interested{
     background-color: green;
     color: #fff;
     padding: 5px 10px;
@@ -681,6 +681,10 @@ hr {
 
 .undecided {
     background: rgb(145, 46, 46);
+}
+
+.not_interested {
+    background: tomato;
 }
 
 .dele-btn {
@@ -1209,6 +1213,38 @@ hr {
     text-decoration: none;
     cursor: pointer;
     width: 100%;
+}
+
+.err-bg {
+    background: #000;
+}
+
+.err-box {
+    margin: 5% auto;
+}
+
+.err-box img {
+    max-width: 100%;
+}
+
+.err-box h3 {
+    font-weight: bolder;
+    color: #232057;
+}
+
+.err-box p {
+    color: #F8991D;
+}
+
+.err-btn {
+    outline: none;
+    box-shadow: rgb(90, 103, 115) 0px 20px 30px -10px;
+    border: 0;
+    padding: 10px 25px;
+    background: #2334A8;
+    color: #fff;
+    border-radius: 8px;
+    font-size: 20px;
 }
   
 
