@@ -649,7 +649,7 @@ hr {
     border-radius: 5px;
 }
 
-.complete, .pending, .un-paid, .interested, .unreachable, .active, .dele-btn, .assigned, .undecided, .not_interested, .next, .enrolled {
+.complete, .pending, .un-paid, .interested, .unreachable, .active, .dele-btn, .assigned, .undecided, .not_interested{
     background-color: green;
     color: #fff;
     padding: 5px 10px;
@@ -690,6 +690,7 @@ hr {
 .next {
     background: goldenrod;
 }
+
 .dele-btn {
     background: #991010;
 }

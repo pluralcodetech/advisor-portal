@@ -29,6 +29,7 @@ function adminLog(event) {
         if(localStorage.getItem("cookieKey") === null) {
           localStorage.setItem('cookieKey', document.cookie);
         }
+        
 
         const adminData = new FormData();
         adminData.append("email", getEmail);
@@ -50,7 +51,7 @@ function adminLog(event) {
             if (result.advisor.hasOwnProperty("email")) {
                 localStorage.setItem("adminLogin", JSON.stringify(result));
                 window.location.href = "dashboard.html";
-            }
+            }3
         })
         .catch(error => {
             console.log('error', error)
@@ -818,6 +819,8 @@ function courses() {
     let courData = [];
 
     const url = "https://pluralcode.academy/pluralcode_payments/api/getcourses";
+    // const url = "https://pluralcode.academy/pluralcode_payments/api/advisor/advisor_courses";
+
     fetch(url, courReq)
     .then(response => response.json())
     .then(result => {
@@ -1736,14 +1739,6 @@ function getTheText2(event) {
     console.log(copyText2)
 }
 
-// function to copy text
-function getTheText3(event) {
-    event.preventDefault();
-    let copyText3 = document.querySelector(".aty3").textContent;
-    navigator.clipboard.writeText(copyText3);
-    console.log(copyText3)
-}
-
 // redirect to login page
 function gotoLoginPage(event) {
     event.preventDefault();
@@ -1753,8 +1748,8 @@ function gotoLoginPage(event) {
 
 // function logout
 function logAdminOut(event) {
-
     event.preventDefault();
+
 
     const myModal = document.querySelector(".pagemodal");
     myModal.style.display = "block";
