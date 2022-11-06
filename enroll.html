@@ -50,7 +50,7 @@
             <a href="interest.html" style="text-decoration: none;"><i class="fa fa-user mr-2" style="color: #fff;"></i><span>Interested</span></a>
           </li>
           <li>
-            <a href="settings.html"  style="text-decoration: none;"><i class="fa fa-user mr-2" style="color: #fff;"></i><span>Settings</span></a>
+            <a href="settings.html"  style="text-decoration: none;"><i class="fa fa-cog mr-2" style="color: #fff;"></i><span>Settings</span></a>
           </li><br><br><br><br><br><br><br>
            <li>
             <a onclick="logAdminOut(event)" style="text-decoration: none;"><i class="fas fa-sign-out mr-2" style="color: #fff;"></i><span class="logspan">Logout</span></a>
@@ -77,7 +77,7 @@
                </form>
                <form>
                     <!-- <label class="label">Course</label> -->
-                    <select class="form-control letcourse" id="input" onchange="getTypeCourse(event)">
+                    <select class="form-control spincourse" id="input" onchange="getTypeCourse(event)">
                     </select>
                </form>
            </div>
@@ -128,5 +128,7 @@
 
     <!-- custom javascript -->
     <script src="main.js"></script>
+    <script type="text/javascript" src="oauth.js"></script>
+
 </body>
 </html>
