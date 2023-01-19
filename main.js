@@ -42,7 +42,7 @@ function adminLog(event) {
             body: adminData
         };
 
-        const url = "https://pluralcode.academy/pluralcode_payments/api/login_advisor";
+        const url = "https://pluralcode.institute/pluralcode_apis/api/login_advisor";
 
         fetch(url, adminRequest)
         .then(response => response.json())
@@ -83,7 +83,7 @@ setTimeout(function destroyCookie() {
         body: cookForm
     };
 
-    const url = "https://pluralcode.academy/pluralcode_payments/api/advisor/logout_expired_cookies";
+    const url = "https://pluralcode.institute/pluralcode_apis/api/advisor/logout_expired_cookies";
     fetch(url, cookReq)
     .then(response => response.json())
     .then(result => {
@@ -119,7 +119,7 @@ function dashBoardDetails() {
         headers: dashHead
     };
 
-    const url = "https://pluralcode.academy/pluralcode_payments/api/advisor/advisor_dashboard_api";
+    const url = "https://pluralcode.institute/pluralcode_apis/api/advisor/advisor_dashboard_api";
     fetch(url, dashReq)
     .then(response => response.json())
     .then(result => {
@@ -156,7 +156,7 @@ function getSchedule() {
 
     let adData = [];
 
-    const url = "https://pluralcode.academy/pluralcode_payments/api/advisor/scheduled_meetings";
+    const url = "https://pluralcode.institute/pluralcode_apis/api/advisor/scheduled_meetings";
     fetch(url, adReq)
     .then(response => response.json())
     .then(result => {
@@ -351,7 +351,7 @@ function updateModal(upId) {
         method: 'GET'
     };
 
-    const url = `https://pluralcode.academy/pluralcode_payments/api/get_advisory_details?id=` + `${upId}`;
+    const url = `https://pluralcode.institute/pluralcode_apis/api/get_advisory_details?id=` + `${upId}`;
     fetch(url, upReq)
     .then(response => response.json())
     .then(result => {
@@ -463,7 +463,7 @@ function updateStatus(event) {
             body: upForm
         };
 
-        const url = "https://pluralcode.academy/pluralcode_payments/api/advisor/update_advisory_details";
+        const url = "https://pluralcode.institute/pluralcode_apis/api/advisor/update_advisory_details";
         fetch(url, upMyReq)
         .then(response => response.json())
         .then(result => {
@@ -508,7 +508,7 @@ function getAdvisoryDetails() {
 
     let myData = [];
 
-    const url = `https://pluralcode.academy/pluralcode_payments/api/get_advisory_details?id=` + `${getId}`;
+    const url = `https://pluralcode.institute/pluralcode_apis/api/get_advisory_details?id=` + `${getId}`;
 
     fetch(url, openAdReq)
     .then(response => response.json())
@@ -663,7 +663,7 @@ function assignTimeSlot(event) {
             body: reForm
         };
 
-        const url = "https://pluralcode.academy/pluralcode_payments/api/advisor/re_schedule_student";
+        const url = "https://pluralcode.institute/pluralcode_apis/api/advisor/re_schedule_student";
         fetch(url, reReq)
         .then(response => response.json())
         .then(result => {
@@ -734,7 +734,7 @@ function changeAdvisoryStatus(event) {
             body: locForm
         };
 
-        const url = "https://pluralcode.academy/pluralcode_payments/api/advisor/update_advisory_status";
+        const url = "https://pluralcode.institute/pluralcode_apis/api/advisor/update_advisory_status";
         fetch(url, locReq)
         .then(response => response.json())
         .then(result => {
@@ -785,7 +785,7 @@ function getEnrolled() {
 
     let dataItem = [];
 
-    const url = "https://pluralcode.academy/pluralcode_payments/api/advisor/enrolled_student";
+    const url = "https://pluralcode.institute/pluralcode_apis/api/advisor/enrolled_student";
     
     fetch(url, enrolledRequest)
     .then(response => response.json())
@@ -818,8 +818,7 @@ function courses() {
 
     let courData = [];
 
-    const url = "https://pluralcode.academy/pluralcode_payments/api/getcourses";
-    // const url = "https://pluralcode.academy/pluralcode_payments/api/advisor/advisor_courses";
+    const url = "https://pluralcode.institute/pluralcode_apis/api/getcourses";
 
     fetch(url, courReq)
     .then(response => response.json())
@@ -863,7 +862,7 @@ function getTypeCourse(event) {
 
     let courseData = [];
 
-    const url = "https://pluralcode.academy/pluralcode_payments/api/advisor/search_enrollments";
+    const url = "https://pluralcode.institute/pluralcode_apis/api/advisor/search_enrollments";
 
     fetch(url, dataReq)
     .then(response => response.json())
@@ -931,7 +930,7 @@ function searchName(event) {
 
         let nameData = [];
 
-        const url = "https://pluralcode.academy/pluralcode_payments/api/advisor/search_enrollments";
+        const url = "https://pluralcode.institute/pluralcode_apis/api/advisor/search_enrollments";
         fetch(url, nameRequest)
         .then(response => response.json())
         .then(result => {
@@ -993,7 +992,7 @@ function searchDate() {
 
     let dateData = [];
 
-    const url = "https://pluralcode.academy/pluralcode_payments/api/advisor/search_enrollments";
+    const url = "https://pluralcode.institute/pluralcode_apis/api/advisor/search_enrollments";
 
     fetch(url, dateReq)
     .then(response => response.json())
@@ -1051,7 +1050,7 @@ function searchStatusAd() {
 
     let cuData = [];
 
-    const url = "https://pluralcode.academy/pluralcode_payments/api/advisor/advisor_search_advisory_table";
+    const url = "https://pluralcode.institute/pluralcode_apis/api/advisor/advisor_search_advisory_table";
     fetch(url, cuReq)
     .then(response => response.json())
     .then(result => {
@@ -1112,7 +1111,7 @@ function getInterest() {
 
     let dataItem = [];
 
-    const url = "https://pluralcode.academy/pluralcode_payments/api/advisor/interested_formstudents";
+    const url = "https://pluralcode.institute/pluralcode_apis/api/advisor/interested_formstudents";
     
     fetch(url, enrolledRequest)
     .then(response => response.json())
@@ -1182,7 +1181,7 @@ function searchName2(event) {
 
         let dateData = [];
 
-        const url = "https://pluralcode.academy/pluralcode_payments/api/advisor/search_interestform";
+        const url = "https://pluralcode.institute/pluralcode_apis/api/advisor/search_interestform";
 
         fetch(url, dateReq)
         .then(response => response.json())
@@ -1244,7 +1243,7 @@ function searchDate2() {
 
     let dateData2 = [];
 
-    const url = "https://pluralcode.academy/pluralcode_payments/api/advisor/search_interestform";
+    const url = "https://pluralcode.institute/pluralcode_apis/api/advisor/search_interestform";
 
     fetch(url, dateReq)
     .then(response => response.json())
@@ -1291,7 +1290,7 @@ function courses2() {
 
     let courData = [];
 
-    const url = "https://pluralcode.academy/pluralcode_payments/api/getcourses";
+    const url = "https://pluralcode.institute/pluralcode_apis/api/getcourses";
     fetch(url, courReq)
     .then(response => response.json())
     .then(result => {
@@ -1335,7 +1334,7 @@ function getTypeCourse2(event) {
 
     let courseData2 = [];
 
-    const url = "https://pluralcode.academy/pluralcode_payments/api/advisor/search_interestform";
+    const url = "https://pluralcode.institute/pluralcode_apis/api/advisor/search_interestform";
 
     fetch(url, dataReq)
     .then(response => response.json())
@@ -1403,7 +1402,7 @@ function searchAdbyName(event) {
 
         let nameData = [];
 
-        const url = "https://pluralcode.academy/pluralcode_payments/api/advisor/advisor_search_advisory_table";
+        const url = "https://pluralcode.institute/pluralcode_apis/api/advisor/advisor_search_advisory_table";
         fetch(url, naReq)
         .then(response => response.json())
         .then(result => {
@@ -1475,7 +1474,7 @@ function searchByToday(event) {
 
     let todayData = [];
 
-    const url = "https://pluralcode.academy/pluralcode_payments/api/advisor/advisor_search_advisory_table";
+    const url = "https://pluralcode.institute/pluralcode_apis/api/advisor/advisor_search_advisory_table";
     fetch(url, toReq)
     .then(response => response.json())
     .then(result => {
@@ -1555,7 +1554,7 @@ function searchTheDate(event) {
 
         let daData = [];
 
-        const url = "https://pluralcode.academy/pluralcode_payments/api/advisor/advisor_search_advisory_table";
+        const url = "https://pluralcode.institute/pluralcode_apis/api/advisor/advisor_search_advisory_table";
         fetch(url, daReq)
         .then(response => response.json())
         .then(result => {
@@ -1615,7 +1614,7 @@ function courses3() {
 
     let coData = [];
 
-    const url = "https://pluralcode.academy/pluralcode_payments/api/advisor/advisor_courses";
+    const url = "https://pluralcode.institute/pluralcode_apis/api/advisor/advisor_courses";
     fetch(url, coReq)
     .then(response => response.json())
     .then(result => {
@@ -1658,7 +1657,7 @@ function visorCourse(event) {
 
     let Data = [];
 
-    const url = "https://pluralcode.academy/pluralcode_payments/api/advisor/advisor_search_advisory_table";
+    const url = "https://pluralcode.institute/pluralcode_apis/api/advisor/advisor_search_advisory_table";
     fetch(url, gReq)
     .then(response => response.json())
     .then(result => {
@@ -1746,10 +1745,247 @@ function gotoLoginPage(event) {
     window.location.href = "index.html";
 }
 
+
+// function for weekly summary
+function getWeekly() {
+    const myModal = document.querySelector(".pagemodal");
+    myModal.style.display = "block";
+
+    const coTok = localStorage.getItem("adminLogin");
+    const gData = JSON.parse(coTok);
+    const goData = gData.token;
+
+    const gw = new Headers();
+    gw.append("Authorization", `Bearer ${goData}`);
+
+    const gwReq = {
+        method: 'GET',
+        headers: gw
+    };
+
+    let gwData = [];
+
+    const url = "https://pluralcode.academy/pluralcode_apis/api/advisor/get_advisor_weekly_summary";
+
+    fetch(url, gwReq)
+    .then(response => response.json())
+    .then(result => {
+        console.log(result)
+        const tableWeek = document.querySelector(".table-week");
+        if (result.length === 0) {
+            tableWeek.innerHTML = `
+               <h2 class="text-center">No Records found on this course</h2>
+            `
+            myModal.style.display = "none";
+        }
+        else {
+            result.map((item) => {
+                gwData += `
+                  <tr>
+                    <td>${item.course}</td>
+                    <td>${item.total_visit_booked}</td>
+                    <td>${item.total_weekly_count}</td>
+                  </tr>
+                `
+                tableWeek.innerHTML = gwData;
+                myModal.style.display = "none";
+            })
+        }
+    })
+    .catch(error => console.log('error', error));
+
+}
+getWeekly();
+
+
+// function for booked visit
+let pageNext;
+function bookVisit() {
+    const myModal = document.querySelector(".pagemodal");
+    myModal.style.display = "block";
+
+    const coTok = localStorage.getItem("adminLogin");
+    const gData = JSON.parse(coTok);
+    const goData = gData.token;
+
+    const bv = new Headers();
+    bv.append("Authorization", `Bearer ${goData}`);
+
+    const bvReq = {
+        method: 'GET',
+        headers: bv
+    };
+
+    let bvData = [];
+
+    const url = "https://pluralcode.academy/pluralcode_apis/api/advisor/get_booked_visit_data";
+
+    fetch(url, bvReq)
+    .then(response => response.json())
+    .then(result => {
+        console.log(result)
+        const tableVisit = document.querySelector(".table-visit");
+        const belu = document.querySelector(".belu");
+        if (result.data.length === 0) {
+            tableVisit.innerHTML = `
+               <h2 class="text-center">No Records found for visits</h2>
+            `
+            myModal.style.display = "none";
+            belu.style.display = "none";
+        }
+        else {
+            result.data.map((item) => {
+                bvData += `
+                  <tr>${item.name}</td>
+                  <tr>${item.email}</td>
+                  <tr>${item.phone_number}</td>
+                  <tr>${item.time}</td>
+                  <tr>${item.date}</td>
+                  <tr>${item.course}</td>
+                  <tr>${item.month}</td>
+                  <tr>${item.year}</td>
+                  <tr>${item.school}</td>
+
+                `
+                tableVisit.innerHTML = bvData;
+                myModal.style.display = "none";
+                belu.style.display = "block";
+            })
+            localStorage.setItem("newPage", `${result.next_page_url}`);
+            const nextItem = localStorage.getItem("newPage");
+            pageNext = nextItem;
+            const current = document.querySelector(".current-page");
+            current.innerHTML = `${result.current_page} of ${result.total}`;
+            if (result.prev_page_url === null) {
+                const getPrev = document.querySelector(".get-previous");
+                getPrev.disabled = true;
+            }
+
+        }
+    })
+    .catch(error => console.log('error', error));
+}
+bookVisit();
+
+// function to get next Page
+let pagePrevious
+function pageNextItem(event) {
+    event.preventDefault();
+
+    const myModal = document.querySelector(".pagemodal");
+    myModal.style.display = "block";
+
+    const etdash = localStorage.getItem("adminLogin");
+    const cmdash2 = JSON.parse(etdash);
+    const cmdash3 = cmdash2.token;
+
+    const nv = new Headers();
+    nv.append("Authorization", `Bearer ${cmdash3}`);
+
+    const nvReq = {
+        method: 'GET',
+        headers: nv
+    };
+
+    let nvData = [];
+
+    const url = pageNext;
+    fetch(url, nvReq)
+    .then(response => response.json())
+    .then(result => {
+        console.log(result)
+        pageNext = `${result.next_page_url}`;
+        result.data.map((item) => {
+            nvData += `
+              <tr>${item.name}</td>
+              <tr>${item.email}</td>
+              <tr>${item.phone_number}</td>
+              <tr>${item.time}</td>
+              <tr>${item.date}</td>
+              <tr>${item.course}</td>
+              <tr>${item.month}</td>
+              <tr>${item.year}</td>
+              <tr>${item.school}</td>
+
+            `
+            tableVisit.innerHTML = nvData;
+            myModal.style.display = "none";
+            belu.style.display = "block";
+            const current = document.querySelector(".current-page");
+            current.innerHTML = `page ${result.current_page} of ${result.total}`;
+            const getPrev = document.querySelector(".get-previous");
+            getPrev.disabled = false;
+        })
+        localStorage.setItem("prevMe", `${result.prev_page_url}`);
+        const prPage = localStorage.getItem("prevMe");
+        pagePrevious = prPage;
+
+    })
+    .catch(error => console.log('error', error));
+}
+
+// function to get previous
+function pagePrevItem(event) {
+    event.preventDefault();
+    const myModal = document.querySelector(".pagemodal");
+    myModal.style.display = "block";
+
+    const etdash = localStorage.getItem("adminLogin");
+    const cmdash2 = JSON.parse(etdash);
+    const cmdash3 = cmdash2.token;
+
+    const pv = new Headers();
+    pv.append("Authorization", `Bearer ${cmdash3}`);
+
+    const pvReq = {
+        method: 'GET',
+        headers: pv
+    };
+
+    let pvData = [];
+    const url = pagePrevious;
+
+    fetch(url, pvReq)
+    .then(response => response.json())
+    .then(result => {
+        console.log(result)
+        pagePrevious = `${result.prev_page_url}`;
+        pageNext = `${result.next_page_url}`;
+        result.data.map((item) => {
+            pvData += `
+              <tr>${item.name}</td>
+              <tr>${item.email}</td>
+              <tr>${item.phone_number}</td>
+              <tr>${item.time}</td>
+              <tr>${item.date}</td>
+              <tr>${item.course}</td>
+              <tr>${item.month}</td>
+              <tr>${item.year}</td>
+              <tr>${item.school}</td>
+
+            `
+            tableVisit.innerHTML = pvData;
+            myModal.style.display = "none";
+            belu.style.display = "block";
+            const current = document.querySelector(".current-page");
+            current.innerHTML = `page ${result.current_page} of ${result.total}`;
+            if (result.prev_page_url === null) {
+                const getPrev = document.querySelector(".get-previous");
+                getPrev.disabled = true;
+            }
+            // this is to disable next button
+            else if (result.next_page_url === null) {
+                const getNext = document.querySelector(".get-next");
+                getNext.disabled = true;
+            }
+        })
+    })
+    .catch(error => console.log('error', error));
+}
+
 // function logout
 function logAdminOut(event) {
     event.preventDefault();
-
 
     const myModal = document.querySelector(".pagemodal");
     myModal.style.display = "block";
@@ -1766,7 +2002,7 @@ function logAdminOut(event) {
         headers: delHeader
     };
 
-    const url = "https://pluralcode.academy/pluralcode_payments/api/advisor/logout";
+    const url = "https://pluralcode.institute/pluralcode_apis/api/advisor/logout";
     fetch(url, logReq)
     .then(response => response.json())
     .then(result => {
