@@ -649,7 +649,7 @@ hr {
     border-radius: 5px;
 }
 
-.complete, .pending, .un-paid, .interested, .unreachable, .active, .dele-btn, .assigned, .undecided, .not_interested{
+.complete, .pending, .un-paid, .interested, .unreachable, .active, .dele-btn, .assigned, .undecided, .not_interested, .enrolled, .next {
     background-color: green;
     color: #fff;
     padding: 5px 10px;
@@ -1142,7 +1142,7 @@ hr {
     padding: 20px;
 }
 
-.sort-btn {
+.sort-btn, .pro-btn {
     border: 0;
     outline: none;
     box-shadow: none;
@@ -1155,6 +1155,17 @@ hr {
     /* width: 100%; */
 }
 
+.pro-btn {
+    padding: 10px 10px;
+    width: 50%;
+}
+
+@media screen and (max-width: 992px) {
+    .pro-btn {
+        width: 100%;
+        padding: 25px 10px;
+    }
+}
 .las {
     background-color:#0C1E5B !important;
 }
@@ -1261,10 +1272,11 @@ hr {
     border: none;
     box-shadow: rgba(0, 0, 0, 0.35) 0 5px 15px;
     cursor: pointer;
+    /*padding: 16px px;*/
 }
 
 .current-page {
-    line-height: 20px;
+    line-height: 40px;
     margin: 10px;
     font-family: sans-serif;
     font-weight: 600;
