@@ -8,56 +8,70 @@ function adminLog(event) {
     if (getEmail === "" || getPass === "") {
         Swal.fire({
             icon: 'info',
-            text: 'All fields are required!',
+            text: 'Please Enter a valid Email!',
             confirmButtonColor: '#25067C'
         })
     }
+
+    
+
 
     else {
         const spinRoll = document.querySelector(".spin");
         spinRoll.style.display = "inline-block";
 
-        const getUniqueId = Math.floor(Math.random() * 1000000);
-        localStorage.setItem("unNum", getUniqueId);
-        const now = new Date();
-        now.setTime(now.getTime() + 1 * 60 * 60 * 1000);
-        // now.setTime(now.getTime() + (30 * 1000));
-        adValue = getUniqueId;
+        // const getUniqueId = Math.floor(Math.random() * 1000000);
+        // localStorage.setItem("unNum", getUniqueId);
+        // const now = new Date();
+        // now.setTime(now.getTime() + 1 * 60 * 60 * 1000);
+        // // now.setTime(now.getTime() + (30 * 1000));
+        // adValue = getUniqueId;
 
-        document.cookie = "name=" + adValue;
-        document.cookie = "expires=" + now.toUTCString() + ";";
-        if(localStorage.getItem("cookieKey") === null) {
-          localStorage.setItem('cookieKey', document.cookie);
-        }
+        // document.cookie = "name=" + adValue;
+        // document.cookie = "expires=" + now.toUTCString() + ";";
+        // if(localStorage.getItem("cookieKey") === null) {
+        //   localStorage.setItem('cookieKey', document.cookie);
+        // }
         
+        const myHead = new Headers();
+        myHead.append('Content-Type', 'application/json')
 
-        const adminData = new FormData();
-        adminData.append("email", getEmail);
-        adminData.append("password", getPass);
-        adminData.append("id", getUniqueId);
+        const profile = JSON.stringify({
+            "email": getEmail,
+            "password": getPass
+        })
 
 
         const adminRequest = {
             method: 'POST',
-            body: adminData
+            headers: myHead,
+            body: profile
         };
 
-        const url = "https://pluralcode.academy/pluralcode_payments/api/login_advisor";
+        const url = "https://backend.pluralcode.institute/advisor/login";
 
         fetch(url, adminRequest)
         .then(response => response.json())
         .then(result => {
             console.log(result)
-            if (result.advisor.hasOwnProperty("email")) {
+            if (result.message === "login successfull") {
                 localStorage.setItem("adminLogin", JSON.stringify(result));
                 window.location.href = "dashboard.html";
-            }3
+            }
+            else {
+                Swal.fire({
+                    icon: 'warning',
+                    text: `${result.message}`,
+                    confirmButtonColor: '#25067C'
+                })
+                spinRoll.style.display = "none";
+            }
         })
         .catch(error => {
             console.log('error', error)
             Swal.fire({
                 icon: 'warning',
-                text: 'username or password is incorrect',
+                text: `${result}`,
                 confirmButtonColor: '#25067C'
             })
             spinRoll.style.display = "none";
@@ -83,7 +97,7 @@ setTimeout(function destroyCookie() {
         body: cookForm
     };
 
-    const url = "https://pluralcode.academy/pluralcode_payments/api/advisor/logout_expired_cookies";
+    const url = "https://pluralcode.institute/pluralcode_apis/api/advisor/logout_expired_cookies";
     fetch(url, cookReq)
     .then(response => response.json())
     .then(result => {
@@ -102,10 +116,10 @@ function dashBoardDetails() {
     const myModal = document.querySelector(".pagemodal");
     myModal.style.display = "block";
 
-    const totalAdvisor = document.getElementById("adAsign");
-    const totalSect = document.getElementById("secHel");
-    const totalAdviCom = document.getElementById("adCom");
 
+    const advisor = document.querySelector(".adname");
+    const rc = document.querySelector(".rc");
+    const position = document.querySelector(".position");
 
     const dash = localStorage.getItem("adminLogin");
     const dash2 = JSON.parse(dash);
@@ -119,22 +133,21 @@ function dashBoardDetails() {
         headers: dashHead
     };
 
-    const url = "https://pluralcode.academy/pluralcode_payments/api/advisor/advisor_dashboard_api";
+    const url = "https://backend.pluralcode.institute/advisor/dashboard-api";
     fetch(url, dashReq)
     .then(response => response.json())
     .then(result => {
         console.log(result)
         localStorage.setItem("dash", JSON.stringify(result));
-        totalAdvisor.innerHTML = result.total_advisory_assigned;
-        totalSect.innerHTML = result.total_enrolled;
-        totalAdviCom.innerHTML = result.total_interest_form_filled;
+        advisor.innerHTML = `${result.advisor.name}`
+        rc.innerHTML = `Referral Code: ${result.advisor.referral_code}`
+        position.innerHTML = `Position: ${result.advisor.position}`
 
-        myModal.style.opacity = "none";
+        myModal.style.display = "none";
 
     })
     .catch(error => console.log('error', error));
 }
-dashBoardDetails();
 
 // function to get schedule meeteings
 let nextPage;
@@ -156,7 +169,7 @@ function getSchedule() {
 
     let adData = [];
 
-    const url = "https://pluralcode.academy/pluralcode_payments/api/advisor/scheduled_meetings";
+    const url = "https://pluralcode.institute/pluralcode_apis/api/advisor/scheduled_meetings";
     fetch(url, adReq)
     .then(response => response.json())
     .then(result => {
@@ -351,7 +364,7 @@ function updateModal(upId) {
         method: 'GET'
     };
 
-    const url = `https://pluralcode.academy/pluralcode_payments/api/get_advisory_details?id=` + `${upId}`;
+    const url = `https://pluralcode.institute/pluralcode_apis/api/get_advisory_details?id=` + `${upId}`;
     fetch(url, upReq)
     .then(response => response.json())
     .then(result => {
@@ -463,7 +476,7 @@ function updateStatus(event) {
             body: upForm
         };
 
-        const url = "https://pluralcode.academy/pluralcode_payments/api/advisor/update_advisory_details";
+        const url = "https://pluralcode.institute/pluralcode_apis/api/advisor/update_advisory_details";
         fetch(url, upMyReq)
         .then(response => response.json())
         .then(result => {
@@ -508,7 +521,7 @@ function getAdvisoryDetails() {
 
     let myData = [];
 
-    const url = `https://pluralcode.academy/pluralcode_payments/api/get_advisory_details?id=` + `${getId}`;
+    const url = `https://pluralcode.institute/pluralcode_apis/api/get_advisory_details?id=` + `${getId}`;
 
     fetch(url, openAdReq)
     .then(response => response.json())
@@ -565,7 +578,7 @@ function getAdvisoryDetails() {
                 </div>
                 <form class="mt-5">
                 <select class="shape status">
-                <option>..choose status..</option>
+                <option value=""></option>
                 <option value="interested">Interested</option>
                 <option value="not_interested">Not Interested</option>
                 <option value="unreachable">Unreachable</option>
@@ -663,7 +676,7 @@ function assignTimeSlot(event) {
             body: reForm
         };
 
-        const url = "https://pluralcode.academy/pluralcode_payments/api/advisor/re_schedule_student";
+        const url = "https://pluralcode.institute/pluralcode_apis/api/advisor/re_schedule_student";
         fetch(url, reReq)
         .then(response => response.json())
         .then(result => {
@@ -710,10 +723,12 @@ function changeAdvisoryStatus(event) {
     if (getStatus === "" || getComment === "") {
         Swal.fire({
             icon: 'info',
-            text: 'All fields are required',
+            text: 'Please select status',
             confirmButtonColor: '#25067C'
         })
+        myModal.style.display = "none";
     }
+    
     else {
         const changeLoc = localStorage.getItem("adminLogin");
         const loc = JSON.parse(changeLoc);
@@ -734,7 +749,7 @@ function changeAdvisoryStatus(event) {
             body: locForm
         };
 
-        const url = "https://pluralcode.academy/pluralcode_payments/api/advisor/update_advisory_status";
+        const url = "https://pluralcode.institute/pluralcode_apis/api/advisor/update_advisory_status";
         fetch(url, locReq)
         .then(response => response.json())
         .then(result => {
@@ -785,7 +800,7 @@ function getEnrolled() {
 
     let dataItem = [];
 
-    const url = "https://pluralcode.academy/pluralcode_payments/api/advisor/enrolled_student";
+    const url = "https://pluralcode.institute/pluralcode_apis/api/advisor/enrolled_student";
     
     fetch(url, enrolledRequest)
     .then(response => response.json())
@@ -818,8 +833,7 @@ function courses() {
 
     let courData = [];
 
-    const url = "https://pluralcode.academy/pluralcode_payments/api/getcourses";
-    // const url = "https://pluralcode.academy/pluralcode_payments/api/advisor/advisor_courses";
+    const url = "https://pluralcode.institute/pluralcode_apis/api/getcourses";
 
     fetch(url, courReq)
     .then(response => response.json())
@@ -863,7 +877,7 @@ function getTypeCourse(event) {
 
     let courseData = [];
 
-    const url = "https://pluralcode.academy/pluralcode_payments/api/advisor/search_enrollments";
+    const url = "https://pluralcode.institute/pluralcode_apis/api/advisor/search_enrollments";
 
     fetch(url, dataReq)
     .then(response => response.json())
@@ -931,7 +945,7 @@ function searchName(event) {
 
         let nameData = [];
 
-        const url = "https://pluralcode.academy/pluralcode_payments/api/advisor/search_enrollments";
+        const url = "https://pluralcode.institute/pluralcode_apis/api/advisor/search_enrollments";
         fetch(url, nameRequest)
         .then(response => response.json())
         .then(result => {
@@ -993,7 +1007,7 @@ function searchDate() {
 
     let dateData = [];
 
-    const url = "https://pluralcode.academy/pluralcode_payments/api/advisor/search_enrollments";
+    const url = "https://pluralcode.institute/pluralcode_apis/api/advisor/search_enrollments";
 
     fetch(url, dateReq)
     .then(response => response.json())
@@ -1051,7 +1065,7 @@ function searchStatusAd() {
 
     let cuData = [];
 
-    const url = "https://pluralcode.academy/pluralcode_payments/api/advisor/advisor_search_advisory_table";
+    const url = "https://pluralcode.institute/pluralcode_apis/api/advisor/advisor_search_advisory_table";
     fetch(url, cuReq)
     .then(response => response.json())
     .then(result => {
@@ -1112,7 +1126,7 @@ function getInterest() {
 
     let dataItem = [];
 
-    const url = "https://pluralcode.academy/pluralcode_payments/api/advisor/interested_formstudents";
+    const url = "https://pluralcode.institute/pluralcode_apis/api/advisor/interested_formstudents";
     
     fetch(url, enrolledRequest)
     .then(response => response.json())
@@ -1182,7 +1196,7 @@ function searchName2(event) {
 
         let dateData = [];
 
-        const url = "https://pluralcode.academy/pluralcode_payments/api/advisor/search_interestform";
+        const url = "https://pluralcode.institute/pluralcode_apis/api/advisor/search_interestform";
 
         fetch(url, dateReq)
         .then(response => response.json())
@@ -1244,7 +1258,7 @@ function searchDate2() {
 
     let dateData2 = [];
 
-    const url = "https://pluralcode.academy/pluralcode_payments/api/advisor/search_interestform";
+    const url = "https://pluralcode.institute/pluralcode_apis/api/advisor/search_interestform";
 
     fetch(url, dateReq)
     .then(response => response.json())
@@ -1291,7 +1305,7 @@ function courses2() {
 
     let courData = [];
 
-    const url = "https://pluralcode.academy/pluralcode_payments/api/getcourses";
+    const url = "https://pluralcode.institute/pluralcode_apis/api/getcourses";
     fetch(url, courReq)
     .then(response => response.json())
     .then(result => {
@@ -1335,7 +1349,7 @@ function getTypeCourse2(event) {
 
     let courseData2 = [];
 
-    const url = "https://pluralcode.academy/pluralcode_payments/api/advisor/search_interestform";
+    const url = "https://pluralcode.institute/pluralcode_apis/api/advisor/search_interestform";
 
     fetch(url, dataReq)
     .then(response => response.json())
@@ -1403,7 +1417,7 @@ function searchAdbyName(event) {
 
         let nameData = [];
 
-        const url = "https://pluralcode.academy/pluralcode_payments/api/advisor/advisor_search_advisory_table";
+        const url = "https://pluralcode.institute/pluralcode_apis/api/advisor/advisor_search_advisory_table";
         fetch(url, naReq)
         .then(response => response.json())
         .then(result => {
@@ -1475,7 +1489,7 @@ function searchByToday(event) {
 
     let todayData = [];
 
-    const url = "https://pluralcode.academy/pluralcode_payments/api/advisor/advisor_search_advisory_table";
+    const url = "https://pluralcode.institute/pluralcode_apis/api/advisor/advisor_search_advisory_table";
     fetch(url, toReq)
     .then(response => response.json())
     .then(result => {
@@ -1555,7 +1569,7 @@ function searchTheDate(event) {
 
         let daData = [];
 
-        const url = "https://pluralcode.academy/pluralcode_payments/api/advisor/advisor_search_advisory_table";
+        const url = "https://pluralcode.institute/pluralcode_apis/api/advisor/advisor_search_advisory_table";
         fetch(url, daReq)
         .then(response => response.json())
         .then(result => {
@@ -1615,7 +1629,7 @@ function courses3() {
 
     let coData = [];
 
-    const url = "https://pluralcode.academy/pluralcode_payments/api/advisor/advisor_courses";
+    const url = "https://pluralcode.institute/pluralcode_apis/api/advisor/advisor_courses";
     fetch(url, coReq)
     .then(response => response.json())
     .then(result => {
@@ -1633,6 +1647,42 @@ function courses3() {
     .catch(error => console.log('error', error));
 }
 courses3();
+
+
+// funtion to show courses for interest
+function coursesProfile() {
+    const coDet = localStorage.getItem("adminLogin");
+    const coLog = JSON.parse(coDet);
+    const coTok = coLog.token;
+        
+    const coHeader = new Headers();
+    coHeader.append("Authorization", `Bearer ${coTok}`);
+
+    const coReq = {
+        method: 'GET',
+        headers: coHeader
+    };
+
+    let coData = [];
+
+    const url = "https://pluralcode.institute/pluralcode_apis/api/advisor/advisor_courses";
+    fetch(url, coReq)
+    .then(response => response.json())
+    .then(result => {
+        console.log(result)
+        localStorage.setItem("getCourse", JSON.stringify(result));
+        
+        result.map((item)=> {
+            coData += `
+            <option value="${item.name}">${item.name}</option>
+            `
+        })
+        const theCourse2 = document.querySelector(".profile");
+        theCourse2.innerHTML = coData;
+    })
+    .catch(error => console.log('error', error));
+}
+coursesProfile();
 
 // function to get advisor dashboard course
 function visorCourse(event) {
@@ -1658,7 +1708,7 @@ function visorCourse(event) {
 
     let Data = [];
 
-    const url = "https://pluralcode.academy/pluralcode_payments/api/advisor/advisor_search_advisory_table";
+    const url = "https://pluralcode.institute/pluralcode_apis/api/advisor/advisor_search_advisory_table";
     fetch(url, gReq)
     .then(response => response.json())
     .then(result => {
@@ -1746,53 +1796,386 @@ function gotoLoginPage(event) {
     window.location.href = "index.html";
 }
 
-// function logout
-function logAdminOut(event) {
-    event.preventDefault();
 
+// function for weekly summary
+function getWeekly() {
+    const myModal = document.querySelector(".pagemodal");
+    myModal.style.display = "block";
+
+    const coTok = localStorage.getItem("adminLogin");
+    const gData = JSON.parse(coTok);
+    const goData = gData.token;
+
+    const gw = new Headers();
+    gw.append("Authorization", `Bearer ${goData}`);
+
+    const gwReq = {
+        method: 'GET',
+        headers: gw
+    };
+
+    let gwData = [];
+
+    const url = "https://pluralcode.academy/pluralcode_apis/api/advisor/get_advisor_weekly_summary";
+
+    fetch(url, gwReq)
+    .then(response => response.json())
+    .then(result => {
+        console.log(result)
+        const tableWeek = document.querySelector(".table-week");
+        if (result.length === 0) {
+            tableWeek.innerHTML = `
+               <h2 class="text-center">No Records found on this course</h2>
+            `
+            myModal.style.display = "none";
+        }
+        else {
+            result.map((item) => {
+                gwData += `
+                  <tr>
+                    <td>${item.course}</td>
+                    <td>${item.total_visit_booked}</td>
+                    <td>${item.total_weekly_count}</td>
+                  </tr>
+                `
+                tableWeek.innerHTML = gwData;
+                myModal.style.display = "none";
+            })
+        }
+    })
+    .catch(error => console.log('error', error));
+
+}
+getWeekly();
+
+
+// function for booked visit
+let pageNext;
+function bookVisit() {
+    const myModal = document.querySelector(".pagemodal");
+    myModal.style.display = "block";
+
+    const coTok = localStorage.getItem("adminLogin");
+    const gData = JSON.parse(coTok);
+    const goData = gData.token;
+
+    const bv = new Headers();
+    bv.append("Authorization", `Bearer ${goData}`);
+
+    const bvReq = {
+        method: 'GET',
+        headers: bv
+    };
+
+    let bvData = [];
+
+    const url = "https://pluralcode.academy/pluralcode_apis/api/advisor/get_booked_visit_data";
+
+    fetch(url, bvReq)
+    .then(response => response.json())
+    .then(result => {
+        console.log(result)
+        const tableVisit = document.querySelector(".table-visit");
+        const belu = document.querySelector(".belu");
+        if (result.data.length === 0) {
+            tableVisit.innerHTML = `
+               <h2 class="text-center">No Records found for visits</h2>
+            `
+            myModal.style.display = "none";
+            belu.style.display = "none";
+        }
+        else {
+            result.data.map((item) => {
+                bvData += `
+                  <tr>
+              <td>${item.name}</td>
+              <td>${item.email}</td>
+              <td>${item.phone_number}</td>
+              <td>${item.time}</td>
+              <td>${item.date}</td>
+              <td>${item.course}</td>
+              <td>${item.month}</td>
+              <td>${item.year}</td>
+              <td>${item.school}</td>
+              <tr/>
+
+                `
+                tableVisit.innerHTML = bvData;
+                myModal.style.display = "none";
+            })
+            if (result.next_page_url === null) {
+                belu.style.display = "none";
+            }
+              else {
+                belu.style.display = "block";
+            }
+            localStorage.setItem("newPage", `${result.next_page_url}`);
+            const nextItem = localStorage.getItem("newPage");
+            pageNext = nextItem;
+            const current = document.querySelector(".current-page");
+            current.innerHTML = `${result.current_page} of ${result.total}`;
+            if (result.prev_page_url === null) {
+                const getPrev = document.querySelector(".get-previous");
+                getPrev.disabled = true;
+            }
+
+        }
+    })
+    .catch(error => console.log('error', error));
+}
+bookVisit();
+
+// function to get next Page
+let pagePrevious
+function pageNextItem(event) {
+    event.preventDefault();
 
     const myModal = document.querySelector(".pagemodal");
     myModal.style.display = "block";
 
-    const logDet = localStorage.getItem("adminLogin");
-    const delLog = JSON.parse(logDet);
-    const delTok = delLog.token;
+    const etdash = localStorage.getItem("adminLogin");
+    const cmdash2 = JSON.parse(etdash);
+    const cmdash3 = cmdash2.token;
 
-    const delHeader = new Headers();
-    delHeader.append("Authorization", `Bearer ${delTok}`)
+    const nv = new Headers();
+    nv.append("Authorization", `Bearer ${cmdash3}`);
 
-    const logReq = {
+    const nvReq = {
         method: 'GET',
-        headers: delHeader
+        headers: nv
     };
 
-    const url = "https://pluralcode.academy/pluralcode_payments/api/advisor/logout";
-    fetch(url, logReq)
+    let nvData = [];
+
+    const url = pageNext;
+    fetch(url, nvReq)
     .then(response => response.json())
     .then(result => {
         console.log(result)
+        pageNext = `${result.next_page_url}`;
+        result.data.map((item) => {
+            nvData += `
+              <tr>
+              <td>${item.name}</td>
+              <td>${item.email}</td>
+              <td>${item.phone_number}</td>
+              <td>${item.time}</td>
+              <td>${item.date}</td>
+              <td>${item.course}</td>
+              <td>${item.month}</td>
+              <td>${item.year}</td>
+              <td>${item.school}</td>
+              <tr/>
 
-        if (result.message === "success") {
-            Swal.fire({
-                icon: 'success',
-                text: `${result.message}`,
-                confirmButtonColor: '#25067C'
-            })
+            `
+            tableVisit.innerHTML = nvData;
+            myModal.style.display = "none";
+            belu.style.display = "block";
+            const current = document.querySelector(".current-page");
+            current.innerHTML = `page ${result.current_page} of ${result.total}`;
+            const getPrev = document.querySelector(".get-previous");
+            getPrev.disabled = false;
+        })
+        localStorage.setItem("prevMe", `${result.prev_page_url}`);
+        const prPage = localStorage.getItem("prevMe");
+        pagePrevious = prPage;
 
-            setTimeout(()=> {
-                localStorage.clear();
-                window.location.href = "index.html";
-            }, 3000);
-            myModal.style.display = "none";
-        }else {
-            Swal.fire({
-                icon: 'info',
-                text: 'Log out Unsuccessful',
-                confirmButtonColor: '#25067C'
-            })
-            myModal.style.display = "none";
-        }
-        
     })
     .catch(error => console.log('error', error));
+}
+
+// function to get previous
+function pagePrevItem(event) {
+    event.preventDefault();
+    const myModal = document.querySelector(".pagemodal");
+    myModal.style.display = "block";
+
+    const etdash = localStorage.getItem("adminLogin");
+    const cmdash2 = JSON.parse(etdash);
+    const cmdash3 = cmdash2.token;
+
+    const pv = new Headers();
+    pv.append("Authorization", `Bearer ${cmdash3}`);
+
+    const pvReq = {
+        method: 'GET',
+        headers: pv
+    };
+
+    let pvData = [];
+    const url = pagePrevious;
+
+    fetch(url, pvReq)
+    .then(response => response.json())
+    .then(result => {
+        console.log(result)
+        pagePrevious = `${result.prev_page_url}`;
+        pageNext = `${result.next_page_url}`;
+        result.data.map((item) => {
+            pvData += `
+              <tr>
+              <td>${item.name}</td>
+              <td>${item.email}</td>
+              <td>${item.phone_number}</td>
+              <td>${item.time}</td>
+              <td>${item.date}</td>
+              <td>${item.course}</td>
+              <td>${item.month}</td>
+              <td>${item.year}</td>
+              <td>${item.school}</td>
+              <tr/>
+
+            `
+            tableVisit.innerHTML = pvData;
+            myModal.style.display = "none";
+            belu.style.display = "block";
+            const current = document.querySelector(".current-page");
+            current.innerHTML = `page ${result.current_page} of ${result.total}`;
+            if (result.prev_page_url === null) {
+                const getPrev = document.querySelector(".get-previous");
+                getPrev.disabled = true;
+            }
+            // this is to disable next button
+            else if (result.next_page_url === null) {
+                const getNext = document.querySelector(".get-next");
+                getNext.disabled = true;
+            }
+        })
+    })
+    .catch(error => console.log('error', error));
+}
+
+// function to create users profile
+function viewModal(event) {
+    event.preventDefault();
+
+    const userModal = document.getElementById("user-modal");
+    userModal.style.display = "block";
+}
+
+function bodal() {
+    const userModal = document.getElementById("user-modal");
+    userModal.style.display = "none";
+}
+
+// function to create prospect
+function createProspect(event) {
+    event.preventDefault();
+
+    const getSpin = document.querySelector(".spin");
+    getSpin.style.display = "inline-block";
+
+    const etdash = localStorage.getItem("adminLogin");
+    const cmdash2 = JSON.parse(etdash);
+    const cmdash3 = cmdash2.token;
+
+    const un = document.getElementById("uname").value;
+    const ue = document.getElementById("uemail").value;
+    const up = document.getElementById("uphone").value;
+    const ua = document.getElementById("uage").value;
+    const ui = document.getElementById("uinterest").value;
+    const ul = document.getElementById("ulocation").value;
+
+    if (un === "" || ue === "" || up === "" || ua === "" || ui === "" || ul === "") {
+        Swal.fire({
+            icon: 'info',
+            text: 'All fields are required...',
+            confirmButtonColor: '#0C1E5B'
+        })
+        getSpin.style.display = "none";
+    }
+
+    else {
+
+
+        const pv = new Headers();
+        pv.append("Authorization", `Bearer ${cmdash3}`);
+
+        const pvReq = {
+            method: 'GET',
+            headers: pv,
+            // body: myform
+        };
+
+        const url = `https://pluralcode.academy/pluralcode_apis/api/bot_create_advisory?name=${un}&email=${ue}&phone_number=${up}&age=${ua}&course_interested_in=${ui}&location=${ul}`;
+        fetch(url, pvReq)
+        .then(response => response.json())
+        .then(result => {
+            console.log(result)
+            if (result.status === "success") {
+                Swal.fire({
+                    icon: 'success',
+                    text: `${result.message}`,
+                    confirmButtonColor: '#0C1E5B'
+                })
+
+                setTimeout(() => {
+                    location.reload();
+                }, 3000)
+            }
+            else {
+                Swal.fire({
+                    icon: 'info',
+                    text: 'Unsuccessful',
+                    confirmButtonColor: '#0C1E5B'
+                })
+                getSpin.style.display = "none";
+            }
+        })
+        .catch(error => {
+            console.log('error', error)
+            if (error) {
+                Swal.fire({
+                    icon: 'info',
+                    text: error,
+                    confirmButtonColor: '#0C1E5B'
+                })
+                getSpin.style.display = "none";
+            }
+        });
+    }
+
+}
+
+// function to display cards
+function cardBooked() {
+
+    const pageMode = document.querySelector(".pagemodal");
+    pageMode.style.display = "block";
+
+    const etdash = localStorage.getItem("adminLogin");
+    const cmdash2 = JSON.parse(etdash);
+    const cmdash3 = cmdash2.token;
+
+    const pv = new Headers();
+    pv.append("Authorization", `Bearer ${cmdash3}`);
+
+    const cardMethod = {
+        method: 'GET',
+        headers: pv
+    }
+
+    const url = `https://backend.pluralcode.institute/advisor/get-booked-sessions`;
+
+    fetch(url, cardMethod)
+    .then(response => response.json())
+    .then(result => console.log(result))
+    .catch(error => console.log('error', error));
+}
+// function logout
+function logAdminOut(event) {
+    event.preventDefault();
+
+    const myModal = document.querySelector(".pagemodal");
+    myModal.style.display = "block";
+    localStorage.clear()
+
+    Swal.fire({
+        icon: 'success',
+        text: 'Logout Successful!',
+        confirmButtonColor: '#0C1E5B'
+    })
+    setTimeout(() => {
+        location.href = "index.html";
+    })
 }
