@@ -48,7 +48,11 @@ function adminLog(event) {
             body: profile
         };
 
+<<<<<<< HEAD
         const url = "https://backend.pluralcode.institute/advisor/login";
+=======
+        const url = "https://pluralcode.institute/pluralcode_apis/api/login_advisor";
+>>>>>>> 635851d62c9d54d49e7a41e15e3425c3a97e62b2
 
         fetch(url, adminRequest)
         .then(response => response.json())
@@ -58,6 +62,7 @@ function adminLog(event) {
                 localStorage.setItem("adminLogin", JSON.stringify(result));
                 window.location.href = "dashboard.html";
             }
+<<<<<<< HEAD
             else {
                 Swal.fire({
                     icon: 'warning',
@@ -66,12 +71,18 @@ function adminLog(event) {
                 })
                 spinRoll.style.display = "none";
             }
+=======
+>>>>>>> 635851d62c9d54d49e7a41e15e3425c3a97e62b2
         })
         .catch(error => {
             console.log('error', error)
             Swal.fire({
                 icon: 'warning',
+<<<<<<< HEAD
                 text: `${result}`,
+=======
+                text: `Network issues ${error}`,
+>>>>>>> 635851d62c9d54d49e7a41e15e3425c3a97e62b2
                 confirmButtonColor: '#25067C'
             })
             spinRoll.style.display = "none";
@@ -133,7 +144,11 @@ function dashBoardDetails() {
         headers: dashHead
     };
 
+<<<<<<< HEAD
     const url = "https://backend.pluralcode.institute/advisor/dashboard-api";
+=======
+    const url = "https://pluralcode.institute/pluralcode_apis/api/advisor/advisor_dashboard_api";
+>>>>>>> 635851d62c9d54d49e7a41e15e3425c3a97e62b2
     fetch(url, dashReq)
     .then(response => response.json())
     .then(result => {
@@ -1796,6 +1811,64 @@ function gotoLoginPage(event) {
     window.location.href = "index.html";
 }
 
+<<<<<<< HEAD
+
+// function for weekly summary
+function getWeekly() {
+    const myModal = document.querySelector(".pagemodal");
+    myModal.style.display = "block";
+
+    const coTok = localStorage.getItem("adminLogin");
+    const gData = JSON.parse(coTok);
+    const goData = gData.token;
+
+    const gw = new Headers();
+    gw.append("Authorization", `Bearer ${goData}`);
+
+    const gwReq = {
+        method: 'GET',
+        headers: gw
+    };
+
+    let gwData = [];
+
+    const url = "https://pluralcode.academy/pluralcode_apis/api/advisor/get_advisor_weekly_summary";
+
+    fetch(url, gwReq)
+    .then(response => response.json())
+    .then(result => {
+        console.log(result)
+        const tableWeek = document.querySelector(".table-week");
+        if (result.length === 0) {
+            tableWeek.innerHTML = `
+               <h2 class="text-center">No Records found on this course</h2>
+            `
+            myModal.style.display = "none";
+        }
+        else {
+            result.map((item) => {
+                gwData += `
+                  <tr>
+                    <td>${item.course}</td>
+                    <td>${item.total_visit_booked}</td>
+                    <td>${item.total_weekly_count}</td>
+                  </tr>
+                `
+                tableWeek.innerHTML = gwData;
+                myModal.style.display = "none";
+            })
+        }
+    })
+    .catch(error => console.log('error', error));
+
+}
+getWeekly();
+
+
+// function for booked visit
+let pageNext;
+function bookVisit() {
+=======
 
 // function for weekly summary
 function getWeekly() {
@@ -1872,6 +1945,298 @@ function bookVisit() {
     const url = "https://pluralcode.academy/pluralcode_apis/api/advisor/get_booked_visit_data";
 
     fetch(url, bvReq)
+    .then(response => response.json())
+    .then(result => {
+        console.log(result)
+        const tableVisit = document.querySelector(".table-visit");
+        const belu = document.querySelector(".belu");
+        if (result.data.length === 0) {
+            tableVisit.innerHTML = `
+               <h2 class="text-center">No Records found for visits</h2>
+            `
+            myModal.style.display = "none";
+            belu.style.display = "none";
+        }
+        else {
+            result.data.map((item) => {
+                bvData += `
+                  <tr>
+              <td>${item.name}</td>
+              <td>${item.email}</td>
+              <td>${item.phone_number}</td>
+              <td>${item.time}</td>
+              <td>${item.date}</td>
+              <td>${item.course}</td>
+              <td>${item.month}</td>
+              <td>${item.year}</td>
+              <td>${item.school}</td>
+              <tr/>
+
+                `
+                tableVisit.innerHTML = bvData;
+                myModal.style.display = "none";
+            })
+            if (result.next_page_url === null) {
+                belu.style.display = "none";
+            }
+              else {
+                belu.style.display = "block";
+            }
+            localStorage.setItem("newPage", `${result.next_page_url}`);
+            const nextItem = localStorage.getItem("newPage");
+            pageNext = nextItem;
+            const current = document.querySelector(".current-page");
+            current.innerHTML = `${result.current_page} of ${result.total}`;
+            if (result.prev_page_url === null) {
+                const getPrev = document.querySelector(".get-previous");
+                getPrev.disabled = true;
+            }
+
+        }
+    })
+    .catch(error => console.log('error', error));
+}
+bookVisit();
+
+// function to get next Page
+let pagePrevious
+function pageNextItem(event) {
+    event.preventDefault();
+
+    const myModal = document.querySelector(".pagemodal");
+    myModal.style.display = "block";
+
+    const etdash = localStorage.getItem("adminLogin");
+    const cmdash2 = JSON.parse(etdash);
+    const cmdash3 = cmdash2.token;
+
+    const nv = new Headers();
+    nv.append("Authorization", `Bearer ${cmdash3}`);
+
+    const nvReq = {
+        method: 'GET',
+        headers: nv
+    };
+
+    let nvData = [];
+
+    const url = pageNext;
+    fetch(url, nvReq)
+    .then(response => response.json())
+    .then(result => {
+        console.log(result)
+        pageNext = `${result.next_page_url}`;
+        result.data.map((item) => {
+            nvData += `
+              <tr>
+              <td>${item.name}</td>
+              <td>${item.email}</td>
+              <td>${item.phone_number}</td>
+              <td>${item.time}</td>
+              <td>${item.date}</td>
+              <td>${item.course}</td>
+              <td>${item.month}</td>
+              <td>${item.year}</td>
+              <td>${item.school}</td>
+              <tr/>
+
+            `
+            tableVisit.innerHTML = nvData;
+            myModal.style.display = "none";
+            belu.style.display = "block";
+            const current = document.querySelector(".current-page");
+            current.innerHTML = `page ${result.current_page} of ${result.total}`;
+            const getPrev = document.querySelector(".get-previous");
+            getPrev.disabled = false;
+        })
+        localStorage.setItem("prevMe", `${result.prev_page_url}`);
+        const prPage = localStorage.getItem("prevMe");
+        pagePrevious = prPage;
+
+    })
+    .catch(error => console.log('error', error));
+}
+
+// function to get previous
+function pagePrevItem(event) {
+    event.preventDefault();
+    const myModal = document.querySelector(".pagemodal");
+    myModal.style.display = "block";
+
+    const etdash = localStorage.getItem("adminLogin");
+    const cmdash2 = JSON.parse(etdash);
+    const cmdash3 = cmdash2.token;
+
+    const pv = new Headers();
+    pv.append("Authorization", `Bearer ${cmdash3}`);
+
+    const pvReq = {
+        method: 'GET',
+        headers: pv
+    };
+
+    let pvData = [];
+    const url = pagePrevious;
+
+    fetch(url, pvReq)
+    .then(response => response.json())
+    .then(result => {
+        console.log(result)
+        pagePrevious = `${result.prev_page_url}`;
+        pageNext = `${result.next_page_url}`;
+        result.data.map((item) => {
+            pvData += `
+              <tr>
+              <td>${item.name}</td>
+              <td>${item.email}</td>
+              <td>${item.phone_number}</td>
+              <td>${item.time}</td>
+              <td>${item.date}</td>
+              <td>${item.course}</td>
+              <td>${item.month}</td>
+              <td>${item.year}</td>
+              <td>${item.school}</td>
+              <tr/>
+
+            `
+            tableVisit.innerHTML = pvData;
+            myModal.style.display = "none";
+            belu.style.display = "block";
+            const current = document.querySelector(".current-page");
+            current.innerHTML = `page ${result.current_page} of ${result.total}`;
+            if (result.prev_page_url === null) {
+                const getPrev = document.querySelector(".get-previous");
+                getPrev.disabled = true;
+            }
+            // this is to disable next button
+            else if (result.next_page_url === null) {
+                const getNext = document.querySelector(".get-next");
+                getNext.disabled = true;
+            }
+        })
+    })
+    .catch(error => console.log('error', error));
+}
+
+// function to create users profile
+function viewModal(event) {
+    event.preventDefault();
+
+    const userModal = document.getElementById("user-modal");
+    userModal.style.display = "block";
+}
+
+function bodal() {
+    const userModal = document.getElementById("user-modal");
+    userModal.style.display = "none";
+}
+
+// function to create prospect
+function createProspect(event) {
+    event.preventDefault();
+
+    const getSpin = document.querySelector(".spin");
+    getSpin.style.display = "inline-block";
+
+    const etdash = localStorage.getItem("adminLogin");
+    const cmdash2 = JSON.parse(etdash);
+    const cmdash3 = cmdash2.token;
+
+    const un = document.getElementById("uname").value;
+    const ue = document.getElementById("uemail").value;
+    const up = document.getElementById("uphone").value;
+    const ua = document.getElementById("uage").value;
+    const ui = document.getElementById("uinterest").value;
+    const ul = document.getElementById("ulocation").value;
+
+    if (un === "" || ue === "" || up === "" || ua === "" || ui === "" || ul === "") {
+        Swal.fire({
+            icon: 'info',
+            text: 'All fields are required...',
+            confirmButtonColor: '#0C1E5B'
+        })
+        getSpin.style.display = "none";
+    }
+
+    else {
+        const pv = new Headers();
+        pv.append("Authorization", `Bearer ${cmdash3}`);
+
+        const pvReq = {
+            method: 'GET',
+            headers: pv,
+            // body: myform
+        };
+
+        const url = `https://pluralcode.academy/pluralcode_apis/api/bot_create_advisory?name=${un}&email=${ue}&phone_number=${up}&age=${ua}&course_interested_in=${ui}&location=${ul}`;
+        fetch(url, pvReq)
+        .then(response => response.json())
+        .then(result => {
+            console.log(result)
+            if (result.status === "success") {
+                Swal.fire({
+                    icon: 'success',
+                    text: `${result.message}`,
+                    confirmButtonColor: '#0C1E5B'
+                })
+
+                setTimeout(() => {
+                    location.reload();
+                }, 3000)
+            }
+            else {
+                Swal.fire({
+                    icon: 'info',
+                    text: 'Unsuccessful',
+                    confirmButtonColor: '#0C1E5B'
+                })
+                getSpin.style.display = "none";
+            }
+        })
+        .catch(error => {
+            console.log('error', error)
+            if (error) {
+                Swal.fire({
+                    icon: 'info',
+                    text: error,
+                    confirmButtonColor: '#0C1E5B'
+                })
+                getSpin.style.display = "none";
+            }
+        });
+    }
+
+}
+// function logout
+function logAdminOut(event) {
+    event.preventDefault();
+
+>>>>>>> 635851d62c9d54d49e7a41e15e3425c3a97e62b2
+    const myModal = document.querySelector(".pagemodal");
+    myModal.style.display = "block";
+
+    const coTok = localStorage.getItem("adminLogin");
+    const gData = JSON.parse(coTok);
+    const goData = gData.token;
+
+    const bv = new Headers();
+    bv.append("Authorization", `Bearer ${goData}`);
+
+    const bvReq = {
+        method: 'GET',
+        headers: bv
+    };
+
+<<<<<<< HEAD
+    let bvData = [];
+
+    const url = "https://pluralcode.academy/pluralcode_apis/api/advisor/get_booked_visit_data";
+
+    fetch(url, bvReq)
+=======
+    const url = "https://pluralcode.institute/pluralcode_apis/api/advisor/logout";
+    fetch(url, logReq)
+>>>>>>> 635851d62c9d54d49e7a41e15e3425c3a97e62b2
     .then(response => response.json())
     .then(result => {
         console.log(result)
