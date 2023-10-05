@@ -1,3 +1,4 @@
+let pagePrevious;
 
 // function to log in advisor
 function adminLog(event) {
@@ -48,11 +49,7 @@ function adminLog(event) {
             body: profile
         };
 
-<<<<<<< HEAD
         const url = "https://backend.pluralcode.institute/advisor/login";
-=======
-        const url = "https://pluralcode.institute/pluralcode_apis/api/login_advisor";
->>>>>>> 635851d62c9d54d49e7a41e15e3425c3a97e62b2
 
         fetch(url, adminRequest)
         .then(response => response.json())
@@ -62,7 +59,6 @@ function adminLog(event) {
                 localStorage.setItem("adminLogin", JSON.stringify(result));
                 window.location.href = "dashboard.html";
             }
-<<<<<<< HEAD
             else {
                 Swal.fire({
                     icon: 'warning',
@@ -71,18 +67,12 @@ function adminLog(event) {
                 })
                 spinRoll.style.display = "none";
             }
-=======
->>>>>>> 635851d62c9d54d49e7a41e15e3425c3a97e62b2
         })
         .catch(error => {
             console.log('error', error)
             Swal.fire({
                 icon: 'warning',
-<<<<<<< HEAD
                 text: `${result}`,
-=======
-                text: `Network issues ${error}`,
->>>>>>> 635851d62c9d54d49e7a41e15e3425c3a97e62b2
                 confirmButtonColor: '#25067C'
             })
             spinRoll.style.display = "none";
@@ -127,7 +117,7 @@ function dashBoardDetails() {
     const myModal = document.querySelector(".pagemodal");
     myModal.style.display = "block";
 
-
+    const spincourse = document.querySelector(".spincourse")
     const advisor = document.querySelector(".adname");
     const rc = document.querySelector(".rc");
     const position = document.querySelector(".position");
@@ -144,11 +134,9 @@ function dashBoardDetails() {
         headers: dashHead
     };
 
-<<<<<<< HEAD
+    let data = [];
+
     const url = "https://backend.pluralcode.institute/advisor/dashboard-api";
-=======
-    const url = "https://pluralcode.institute/pluralcode_apis/api/advisor/advisor_dashboard_api";
->>>>>>> 635851d62c9d54d49e7a41e15e3425c3a97e62b2
     fetch(url, dashReq)
     .then(response => response.json())
     .then(result => {
@@ -156,7 +144,14 @@ function dashBoardDetails() {
         localStorage.setItem("dash", JSON.stringify(result));
         advisor.innerHTML = `${result.advisor.name}`
         rc.innerHTML = `Referral Code: ${result.advisor.referral_code}`
-        position.innerHTML = `Position: ${result.advisor.position}`
+        position.innerHTML = `Position: ${result.advisor.position}`;
+
+        result.courselist.map((item) => {
+            data += `
+              <option value="${item.name}">${item.name}</option>
+            `
+            spincourse.innerHTML = data;
+        })
 
         myModal.style.display = "none";
 
@@ -1705,59 +1700,54 @@ function visorCourse(event) {
     myModal.style.display = "block";
 
     const course = event.currentTarget.value;
+    const getMio = document.querySelector(".mio");
     const coTok = localStorage.getItem("adminLogin");
     const gData = JSON.parse(coTok);
     const goData = gData.token;
 
+
     const gHeader = new Headers();
+    gHeader.append('Content-Type', 'application/json');
     gHeader.append("Authorization", `Bearer ${goData}`);
 
-    const coForm = new FormData();
-    coForm.append("course", course);
 
     const gReq = {
-        method: 'POST',
+        method: 'GET',
         headers: gHeader,
-        body: coForm
     };
 
-    let Data = [];
+    let data = [];
 
-    const url = "https://pluralcode.institute/pluralcode_apis/api/advisor/advisor_search_advisory_table";
+    const url = `https://backend.pluralcode.institute/advisor/get-booked-sessions?course=${course}`;
     fetch(url, gReq)
     .then(response => response.json())
     .then(result => {
         console.log(result)
         const myTable2 = document.querySelector(".tableindex");
-        if (result.length === 0) {
+        if (result.message === "No course record found") {
             myTable2.innerHTML = `
-               <h2 class="text-center">No Records found on this course</h2>
+               <h2 class="text-center">${result.message}</h2>
             `
             myModal.style.display = "none";
+            getMio.style.display = "none"
         }
         else {
-            result.map((item) => {
-               Data += `
-               <tr>
-               <td>${item.date}</td>
-               <td>${item.name}</td>
-               <td>${item.email}</td>
-               <td>${item.phone_number}</td>
-               <td>${item.course_interested_in}</td>
-               <td>${item.schedule}</td>
-               <td>${item.time}</td>
-               <td><button class="re-btn" onclick="rescheduleTime(${item.id})">Reschedule</button></td>
-               <td><a href="view.html?id=${item.id}"><button class="upd">View me</button></a></td>
-               <td><button class="${item.status} adBtn">
-                   ${item.status}
-                   </button>
-               </td>
-               <td><a href="https://wa.me/234${item.phone_number}"><i class='fab fa-whatsapp' style='color:#0e8115; font-size: 30px;'></i></a></td>
-               <td><button class="upstate-btn" onclick="updateModal(${item.id})">Edit Advisory</button></td>
-               </tr>
+            result.advisorydata.data.map((item) => {
+               data += `
+                    <tr>
+                        <td>${item.date}</td>
+                        <td>${item.name}</td>
+                        <td>${item.email}</td>
+                        <td>${item.phone_number}</td>
+                        <td>${item.course_interested_in}</td>
+                        <td>${item.time}</td>
+                        <td>${item.year}</td>
+                        <td>${item.month}</td>
+                        <td><button class="${item.status}">${item.status}</button></td>
+                    </tr>
                     `
-                    myTable2.innerHTML = Data;
-                    myModal.style.display = "none";
+                myTable2.innerHTML = data;
+                myModal.style.display = "none";
             })
         }
         
@@ -1811,7 +1801,6 @@ function gotoLoginPage(event) {
     window.location.href = "index.html";
 }
 
-<<<<<<< HEAD
 
 // function for weekly summary
 function getWeekly() {
@@ -1865,10 +1854,6 @@ function getWeekly() {
 getWeekly();
 
 
-// function for booked visit
-let pageNext;
-function bookVisit() {
-=======
 
 // function for weekly summary
 function getWeekly() {
@@ -1998,300 +1983,87 @@ function bookVisit() {
 }
 bookVisit();
 
-// function to get next Page
-let pagePrevious
-function pageNextItem(event) {
-    event.preventDefault();
 
-    const myModal = document.querySelector(".pagemodal");
-    myModal.style.display = "block";
 
-    const etdash = localStorage.getItem("adminLogin");
-    const cmdash2 = JSON.parse(etdash);
-    const cmdash3 = cmdash2.token;
 
-    const nv = new Headers();
-    nv.append("Authorization", `Bearer ${cmdash3}`);
-
-    const nvReq = {
-        method: 'GET',
-        headers: nv
-    };
-
-    let nvData = [];
-
-    const url = pageNext;
-    fetch(url, nvReq)
-    .then(response => response.json())
-    .then(result => {
-        console.log(result)
-        pageNext = `${result.next_page_url}`;
-        result.data.map((item) => {
-            nvData += `
-              <tr>
-              <td>${item.name}</td>
-              <td>${item.email}</td>
-              <td>${item.phone_number}</td>
-              <td>${item.time}</td>
-              <td>${item.date}</td>
-              <td>${item.course}</td>
-              <td>${item.month}</td>
-              <td>${item.year}</td>
-              <td>${item.school}</td>
-              <tr/>
-
-            `
-            tableVisit.innerHTML = nvData;
-            myModal.style.display = "none";
-            belu.style.display = "block";
-            const current = document.querySelector(".current-page");
-            current.innerHTML = `page ${result.current_page} of ${result.total}`;
-            const getPrev = document.querySelector(".get-previous");
-            getPrev.disabled = false;
-        })
-        localStorage.setItem("prevMe", `${result.prev_page_url}`);
-        const prPage = localStorage.getItem("prevMe");
-        pagePrevious = prPage;
-
-    })
-    .catch(error => console.log('error', error));
-}
-
-// function to get previous
-function pagePrevItem(event) {
-    event.preventDefault();
-    const myModal = document.querySelector(".pagemodal");
-    myModal.style.display = "block";
-
-    const etdash = localStorage.getItem("adminLogin");
-    const cmdash2 = JSON.parse(etdash);
-    const cmdash3 = cmdash2.token;
-
-    const pv = new Headers();
-    pv.append("Authorization", `Bearer ${cmdash3}`);
-
-    const pvReq = {
-        method: 'GET',
-        headers: pv
-    };
-
-    let pvData = [];
-    const url = pagePrevious;
-
-    fetch(url, pvReq)
-    .then(response => response.json())
-    .then(result => {
-        console.log(result)
-        pagePrevious = `${result.prev_page_url}`;
-        pageNext = `${result.next_page_url}`;
-        result.data.map((item) => {
-            pvData += `
-              <tr>
-              <td>${item.name}</td>
-              <td>${item.email}</td>
-              <td>${item.phone_number}</td>
-              <td>${item.time}</td>
-              <td>${item.date}</td>
-              <td>${item.course}</td>
-              <td>${item.month}</td>
-              <td>${item.year}</td>
-              <td>${item.school}</td>
-              <tr/>
-
-            `
-            tableVisit.innerHTML = pvData;
-            myModal.style.display = "none";
-            belu.style.display = "block";
-            const current = document.querySelector(".current-page");
-            current.innerHTML = `page ${result.current_page} of ${result.total}`;
-            if (result.prev_page_url === null) {
-                const getPrev = document.querySelector(".get-previous");
-                getPrev.disabled = true;
-            }
-            // this is to disable next button
-            else if (result.next_page_url === null) {
-                const getNext = document.querySelector(".get-next");
-                getNext.disabled = true;
-            }
-        })
-    })
-    .catch(error => console.log('error', error));
-}
-
-// function to create users profile
-function viewModal(event) {
-    event.preventDefault();
-
-    const userModal = document.getElementById("user-modal");
-    userModal.style.display = "block";
-}
-
-function bodal() {
-    const userModal = document.getElementById("user-modal");
-    userModal.style.display = "none";
-}
-
-// function to create prospect
-function createProspect(event) {
-    event.preventDefault();
-
-    const getSpin = document.querySelector(".spin");
-    getSpin.style.display = "inline-block";
-
-    const etdash = localStorage.getItem("adminLogin");
-    const cmdash2 = JSON.parse(etdash);
-    const cmdash3 = cmdash2.token;
-
-    const un = document.getElementById("uname").value;
-    const ue = document.getElementById("uemail").value;
-    const up = document.getElementById("uphone").value;
-    const ua = document.getElementById("uage").value;
-    const ui = document.getElementById("uinterest").value;
-    const ul = document.getElementById("ulocation").value;
-
-    if (un === "" || ue === "" || up === "" || ua === "" || ui === "" || ul === "") {
-        Swal.fire({
-            icon: 'info',
-            text: 'All fields are required...',
-            confirmButtonColor: '#0C1E5B'
-        })
-        getSpin.style.display = "none";
-    }
-
-    else {
-        const pv = new Headers();
-        pv.append("Authorization", `Bearer ${cmdash3}`);
-
-        const pvReq = {
-            method: 'GET',
-            headers: pv,
-            // body: myform
-        };
-
-        const url = `https://pluralcode.academy/pluralcode_apis/api/bot_create_advisory?name=${un}&email=${ue}&phone_number=${up}&age=${ua}&course_interested_in=${ui}&location=${ul}`;
-        fetch(url, pvReq)
-        .then(response => response.json())
-        .then(result => {
-            console.log(result)
-            if (result.status === "success") {
-                Swal.fire({
-                    icon: 'success',
-                    text: `${result.message}`,
-                    confirmButtonColor: '#0C1E5B'
-                })
-
-                setTimeout(() => {
-                    location.reload();
-                }, 3000)
-            }
-            else {
-                Swal.fire({
-                    icon: 'info',
-                    text: 'Unsuccessful',
-                    confirmButtonColor: '#0C1E5B'
-                })
-                getSpin.style.display = "none";
-            }
-        })
-        .catch(error => {
-            console.log('error', error)
-            if (error) {
-                Swal.fire({
-                    icon: 'info',
-                    text: error,
-                    confirmButtonColor: '#0C1E5B'
-                })
-                getSpin.style.display = "none";
-            }
-        });
-    }
-
-}
 // function logout
-function logAdminOut(event) {
-    event.preventDefault();
+// function logAdminOut(event) {
+//     event.preventDefault();
 
->>>>>>> 635851d62c9d54d49e7a41e15e3425c3a97e62b2
-    const myModal = document.querySelector(".pagemodal");
-    myModal.style.display = "block";
+//     const myModal = document.querySelector(".pagemodal");
+//     myModal.style.display = "block";
 
-    const coTok = localStorage.getItem("adminLogin");
-    const gData = JSON.parse(coTok);
-    const goData = gData.token;
+//     const coTok = localStorage.getItem("adminLogin");
+//     const gData = JSON.parse(coTok);
+//     const goData = gData.token;
 
-    const bv = new Headers();
-    bv.append("Authorization", `Bearer ${goData}`);
+//     const bv = new Headers();
+//     bv.append("Authorization", `Bearer ${goData}`);
 
-    const bvReq = {
-        method: 'GET',
-        headers: bv
-    };
+//     const bvReq = {
+//         method: 'GET',
+//         headers: bv
+//     };
 
-<<<<<<< HEAD
-    let bvData = [];
+//     let bvData = [];
 
-    const url = "https://pluralcode.academy/pluralcode_apis/api/advisor/get_booked_visit_data";
+//     const url = "https://pluralcode.academy/pluralcode_apis/api/advisor/get_booked_visit_data";
 
-    fetch(url, bvReq)
-=======
-    const url = "https://pluralcode.institute/pluralcode_apis/api/advisor/logout";
-    fetch(url, logReq)
->>>>>>> 635851d62c9d54d49e7a41e15e3425c3a97e62b2
-    .then(response => response.json())
-    .then(result => {
-        console.log(result)
-        const tableVisit = document.querySelector(".table-visit");
-        const belu = document.querySelector(".belu");
-        if (result.data.length === 0) {
-            tableVisit.innerHTML = `
-               <h2 class="text-center">No Records found for visits</h2>
-            `
-            myModal.style.display = "none";
-            belu.style.display = "none";
-        }
-        else {
-            result.data.map((item) => {
-                bvData += `
-                  <tr>
-              <td>${item.name}</td>
-              <td>${item.email}</td>
-              <td>${item.phone_number}</td>
-              <td>${item.time}</td>
-              <td>${item.date}</td>
-              <td>${item.course}</td>
-              <td>${item.month}</td>
-              <td>${item.year}</td>
-              <td>${item.school}</td>
-              <tr/>
+//     fetch(url, bvReq)
+//     .then(response => response.json())
+//     .then(result => {
+//         console.log(result)
+//         const tableVisit = document.querySelector(".table-visit");
+//         const belu = document.querySelector(".belu");
+//         if (result.data.length === 0) {
+//             tableVisit.innerHTML = `
+//                <h2 class="text-center">No Records found for visits</h2>
+//             `
+//             myModal.style.display = "none";
+//             belu.style.display = "none";
+//         }
+//         else {
+//             result.data.map((item) => {
+//                 bvData += `
+//                   <tr>
+//               <td>${item.name}</td>
+//               <td>${item.email}</td>
+//               <td>${item.phone_number}</td>
+//               <td>${item.time}</td>
+//               <td>${item.date}</td>
+//               <td>${item.course}</td>
+//               <td>${item.month}</td>
+//               <td>${item.year}</td>
+//               <td>${item.school}</td>
+//               <tr/>
 
-                `
-                tableVisit.innerHTML = bvData;
-                myModal.style.display = "none";
-            })
-            if (result.next_page_url === null) {
-                belu.style.display = "none";
-            }
-              else {
-                belu.style.display = "block";
-            }
-            localStorage.setItem("newPage", `${result.next_page_url}`);
-            const nextItem = localStorage.getItem("newPage");
-            pageNext = nextItem;
-            const current = document.querySelector(".current-page");
-            current.innerHTML = `${result.current_page} of ${result.total}`;
-            if (result.prev_page_url === null) {
-                const getPrev = document.querySelector(".get-previous");
-                getPrev.disabled = true;
-            }
+//                 `
+//                 tableVisit.innerHTML = bvData;
+//                 myModal.style.display = "none";
+//             })
+//             if (result.next_page_url === null) {
+//                 belu.style.display = "none";
+//             }
+//               else {
+//                 belu.style.display = "block";
+//             }
+//             localStorage.setItem("newPage", `${result.next_page_url}`);
+//             const nextItem = localStorage.getItem("newPage");
+//             pageNext = nextItem;
+//             const current = document.querySelector(".current-page");
+//             current.innerHTML = `${result.current_page} of ${result.total}`;
+//             if (result.prev_page_url === null) {
+//                 const getPrev = document.querySelector(".get-previous");
+//                 getPrev.disabled = true;
+//             }
 
-        }
-    })
-    .catch(error => console.log('error', error));
-}
-bookVisit();
+//         }
+//     })
+//     .catch(error => console.log('error', error));
+// }
+// bookVisit();
 
 // function to get next Page
-let pagePrevious
 function pageNextItem(event) {
     event.preventDefault();
 
@@ -2504,7 +2276,9 @@ function createProspect(event) {
 
 // function to display cards
 function cardBooked() {
-
+    const paginationContainer = document.getElementById('pagination-container');
+    const dash = document.querySelector(".dash-cards");
+    const tableIndex = document.querySelector(".tableindex");
     const pageMode = document.querySelector(".pagemodal");
     pageMode.style.display = "block";
 
@@ -2513,6 +2287,7 @@ function cardBooked() {
     const cmdash3 = cmdash2.token;
 
     const pv = new Headers();
+    pv.append('Content-Type', 'application/json');
     pv.append("Authorization", `Bearer ${cmdash3}`);
 
     const cardMethod = {
@@ -2520,13 +2295,150 @@ function cardBooked() {
         headers: pv
     }
 
+    let data = [];
+    let data2 = [];
+
+
     const url = `https://backend.pluralcode.institute/advisor/get-booked-sessions`;
 
     fetch(url, cardMethod)
     .then(response => response.json())
-    .then(result => console.log(result))
+    .then(result => {
+        console.log(result)
+
+        if (result.coursedetails.length === 0) {
+            dash.innerHTML = "No Records Found!";
+            pageMode.style.display = "none";
+        }
+        else {
+            result.coursedetails.map((item) => {
+                data += `
+                    <div class="card-single">
+                        <div class="card-body">
+                            <span class="las la-clipboard-list" style="color: #b6cc00; font-size: 32px;"></span>
+                            <div>
+                                <h6><b>${item.course_name}</b></h6>
+                                <p id="adAsign">Total Enrollment:<b>${item.enrollmentcount}</b></p>
+                                <p id="adAsign">Total Session Booked:<b>${item.course_count}</b></p>
+                            </div>
+                        </div>
+                    </div>
+                `
+                dash.innerHTML = data;
+            })
+        }
+
+        if (result.advisorydata.data.length === 0) {
+            tableIndex.innerHTML = "No Records Found!"
+        }
+        else {
+            result.advisorydata.data.map((item) => {
+                data2 += `
+                  <tr>
+                     <td>${item.date}</td>
+                     <td>${item.name}</td>
+                     <td>${item.email}</td>
+                     <td>${item.phone_number}</td>
+                     <td>${item.course_interested_in}</td>
+                     <td>${item.time}</td>
+                     <td>${item.year}</td>
+                     <td>${item.month}</td>
+                     <td><button class="${item.status}">${item.status}</button></td>
+                  </tr>
+                `
+                tableIndex.innerHTML = data2;
+            })
+        }
+
+
+        let totalPages = result.advisorydata.total_pages;
+        let currentPage = result.advisorydata.page;
+        let maxVisiblePages = 5;
+
+        function createPagination() {
+            paginationContainer.innerHTML = '';
+
+            const startPage = Math.max(currentPage - Math.floor(maxVisiblePages / 2), 1);
+            const endPage = Math.min(startPage + maxVisiblePages - 1, totalPages);
+
+            for (let page = startPage; page <= endPage; page++) {
+                const pageElement = document.createElement('span');
+                pageElement.textContent = page;
+                pageElement.className = page === currentPage ? 'mactive' : '';
+                pageElement.classList.add("monc");
+                pageElement.addEventListener('click', () => onPageClick(page));
+                paginationContainer.appendChild(pageElement);
+            }
+
+            if (startPage > 1) {
+                const prevDots = document.createElement('span');
+                prevDots.textContent = '...';
+                prevDots.className = 'dots';
+                paginationContainer.insertBefore(prevDots, paginationContainer.firstChild);
+            }
+            if (endPage < totalPages) {
+                const nextDots = document.createElement('span');
+                nextDots.textContent = '...';
+                nextDots.className = 'dots';
+                paginationContainer.appendChild(nextDots);
+            }
+            
+        }
+        function onPageClick(page) {
+            currentPage = page;
+            console.log(currentPage)
+            const getSpin = document.querySelector(".pagemodal");
+            getSpin.style.display = "block";
+
+            const etdash = localStorage.getItem("adminLogin");
+            const cmdash2 = JSON.parse(etdash);
+            const cmdash3 = cmdash2.token;
+
+            const pv = new Headers();
+            pv.append('Content-Type', 'application/json');
+            pv.append("Authorization", `Bearer ${cmdash3}`);
+
+            const cardMethod = {
+                method: 'GET',
+                headers: pv
+            }
+
+            let data3 = [];
+
+            const url = `https://backend.pluralcode.institute/advisor/get-booked-sessions?page=${currentPage}`;
+
+           fetch(url, cardMethod)
+           .then(response => response.json())
+           .then(result => {
+               console.log(result)
+               result.advisorydata.data.map((item) => {
+                data3 += `
+                  <tr>
+                     <td>${item.date}</td>
+                     <td>${item.name}</td>
+                     <td>${item.email}</td>
+                     <td>${item.phone_number}</td>
+                     <td>${item.course_interested_in}</td>
+                     <td>${item.time}</td>
+                     <td>${item.year}</td>
+                     <td>${item.month}</td>
+                     <td><button class="${item.status}">${item.status}</button></td>
+                  </tr>
+                `
+                tableIndex.innerHTML = data3;
+                getSpin.style.display = "none";
+            })
+           })
+           .catch(error => console.log('error', error));
+            createPagination()
+        }
+
+        createPagination();
+
+    })
     .catch(error => console.log('error', error));
 }
+
 // function logout
 function logAdminOut(event) {
     event.preventDefault();

@@ -301,13 +301,12 @@ main {
 
 .outer-wrapper {
     margin: 10px;
-    margin-left: 20px;
-    margin-right: 20px;
     border: 1px solid #fff;
     border-radius: 4px;
-    box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+    /* box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px; */
     max-width: 100%;
     max-height: fit-content;
+    position: relative;
 }
 .table-wrapper {
 
@@ -333,7 +332,27 @@ table {
     
 }
 
+.mio {
+    position: absolute;
+    bottom: -45px;
+    right: 0;
+}
 
+.monc {
+    padding: 10px 15px;
+    border: 0;
+    box-shadow: rgba(0, 0, 0, 0.35) 0 5px 15px;
+    outline: none;
+    margin: 10px;
+    cursor: pointer;
+}
+
+.mactive {
+    background: #2334A8;
+    color: #fff;
+    border-radius: 5px;
+    margin-top: 3px;
+}
 
 table th{
     position: sticky; 
@@ -377,7 +396,9 @@ table td:nth-child(9) {
     text-align: left;
 }
 
+.entor {
 
+}
 
 .mimipara {
     padding: 5px 15px;
@@ -607,10 +628,10 @@ hr {
 }
 
 .form-control {
-    /* border: 1px solid #000; */
+    border: 1px solid rgb(182, 178, 178) !important;
     margin-top: 10px;
-    outline: none;
-    box-shadow: none;
+    outline: none !important;
+    box-shadow: none !important;
 }
 
 .fill {
@@ -1281,7 +1302,7 @@ hr {
     border: none;
     box-shadow: rgba(0, 0, 0, 0.35) 0 5px 15px;
     cursor: pointer;
-    /*padding: 16px px;*/
+    padding: 10px;
 }
 
 .current-page {

@@ -106,33 +106,7 @@
             </div>
         </div>
         <div class="dash-cards mb-5">
-            <div class="card-single">
-                <div class="card-body">
-                    <span class="las la-clipboard-list" style="color: #b6cc00; font-size: 32px;"></span>
-                    <div>
-                        <p>Total Advisory Assigned</p>
-                        <h5 id="adAsign"><b></b></h5>
-                    </div>
-                </div>
-            </div>
-            <div class="card-single">
-                <div class="card-body">
-                    <span class="las la-layer-group" style="color: #b6cc00; font-size: 32px;"></span>
-                    <div>
-                        <p>Total Enrolled</p>
-                        <h5 id="secHel"><b></b></h5>
-                    </div>
-                </div>
-            </div>
-            <div class="card-single">
-                <div class="card-body">
-                    <span class="las la-file-invoice" style="color: #b6cc00; font-size: 32px;"></span>
-                    <div>
-                        <p>Total Interest Form Filled </p>
-                        <h5 id="adCom"><b></b></h5>
-                    </div>
-                </div>
-            </div>
+            
         </div>
 
 
@@ -140,16 +114,7 @@
              
               <div class="head-shift">
                   <button class="pro-btn" onclick="viewModal(event)">create prospect profile</button>
-<<<<<<< HEAD
                 
-=======
-                <div class="input-group rounded">
-                    <input type="text" class="form-control rounded myname" placeholder="Search by name" aria-label="Search" aria-describedby="search-addon" />
-                    <span class="input-group-text border-0" id="search-addon">
-                    <i class="fas fa-search" onclick="searchAdbyName(event)"></i>
-                    </span>
-                </div>
->>>>>>> 635851d62c9d54d49e7a41e15e3425c3a97e62b2
                 <form>
                       <select class="form-control spincourse" id="input" onchange="visorCourse(event)">
                       </select>
@@ -184,28 +149,23 @@
                                 <th>Email Address</th>
                                 <th>Phone Number</th>
                                 <th>Course of interest</th>
-                                <th>Schedule session</th>
                                 <th>Time</th>
-                                <th>Reschedule</th>
-                                <th>Details</th>
+                                <th>Year</th>
+                                <th>Month</th>
                                 <th>Status</th>
-                                <th>Whatsapp</th>
-                                <th>Edit Advisory</th>
                             </tr>
                         </thead>
                         <tbody class="tableindex">
                             
                         </tbody>
                     </table>
-
-                    <nav class="mt-5">
-                        <ul class="pagination pg-blue justify-content-center">
-                            <button class="get-previous" onclick="prevPageItem(event)"><i class="fa fa-chevron-left"></i></button>
-                            <p class="current-page"></p>
-                            <button class="get-next" onclick="nextPageItem(event)"><i class="fa fa-chevron-right"></i></button>
-                        </ul>
-                    </nav>
                 </div>
+                <nav class="mt-5 mio">
+                    <ul class="pagination pg-blue justify-content-center">
+                        <div id="pagination-container" class="wesg"></div>
+                    </ul>
+                </nav>
+                
             </div>
           </div>
 
