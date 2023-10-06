@@ -1550,6 +1550,7 @@ function searchTheDate(event) {
 
     const first = document.querySelector(".firstValue").value;
     const second = document.querySelector(".secondValue").value;
+    const scourse = document.querySelector(".spincourse").value;
 
     if (first === "" || second === "") {
         Swal.fire({
@@ -1558,8 +1559,7 @@ function searchTheDate(event) {
             confirmButtonColor: '#0C1E5B'
         })
     }
-
-    else {
+    if (!scourse) {
         const daDet = localStorage.getItem("adminLogin");
         const daLog = JSON.parse(daDet);
         const daTok = daLog.token;
@@ -1578,47 +1578,6 @@ function searchTheDate(event) {
         };
 
         let daData = [];
-
-        const url = "https://pluralcode.institute/pluralcode_apis/api/advisor/advisor_search_advisory_table";
-        fetch(url, daReq)
-        .then(response => response.json())
-        .then(result => {
-            console.log(result)
-            const myTable2 = document.querySelector(".tableindex");
-            if (result.length === 0) {
-                myTable2.innerHTML = `
-                   <h2 class="text-center">No Records found on this course</h2>
-                `
-                myModal.style.display = "none";
-            }
-            else {
-                result.map((item) => {
-                    daData += 
-                   `
-                   <tr>
-                    <td>${item.date}</td>
-                    <td>${item.name}</td>
-                    <td>${item.email}</td>
-                    <td>${item.phone_number}</td>
-                    <td>${item.course_interested_in}</td>
-                    <td>${item.schedule}</td>
-                    <td>${item.time}</td>
-                    <td><button class="re-btn" onclick="rescheduleTime(${item.id})">Reschedule</button></td>
-                    <td><a href="view.html?id=${item.id}"><button class="upd">View me</button></a></td>
-                    <td><button class="${item.status} adBtn">
-                        ${item.status}
-                        </button>
-                    </td>
-                    <td><a href="https://wa.me/234${item.phone_number}"><i class='fab fa-whatsapp' style='color:#0e8115; font-size: 30px;'></i></a></td>
-                    <td><button class="upstate-btn" onclick="updateModal(${item.id})">Edit Advisory</button></td>
-                    </tr>
-                    `
-                     myTable2.innerHTML = daData;
-                    myModal.style.display = "none";
-               })
-            }
-        })
-        .catch(error => console.log('error', error));
     }
 
 }
@@ -1696,8 +1655,11 @@ coursesProfile();
 
 // function to get advisor dashboard course
 function visorCourse(event) {
+    const paginationContainer = document.getElementById('pagination-container');
+    const myTable2 = document.querySelector(".tableindex");
     const myModal = document.querySelector(".pagemodal");
     myModal.style.display = "block";
+
 
     const course = event.currentTarget.value;
     const getMio = document.querySelector(".mio");
@@ -1723,13 +1685,12 @@ function visorCourse(event) {
     .then(response => response.json())
     .then(result => {
         console.log(result)
-        const myTable2 = document.querySelector(".tableindex");
         if (result.message === "No course record found") {
             myTable2.innerHTML = `
                <h2 class="text-center">${result.message}</h2>
             `
             myModal.style.display = "none";
-            getMio.style.display = "none"
+            getMio.style.display = "none";
         }
         else {
             result.advisorydata.data.map((item) => {
@@ -1748,8 +1709,95 @@ function visorCourse(event) {
                     `
                 myTable2.innerHTML = data;
                 myModal.style.display = "none";
+                getMio.style.display = "block";
             })
         }
+        let totalPages = result.advisorydata.total_pages;
+        let currentPage = result.advisorydata.page;
+        let maxVisiblePages = 5;
+
+        function createPagination() {
+            paginationContainer.innerHTML = '';
+
+            const startPage = Math.max(currentPage - Math.floor(maxVisiblePages / 2), 1);
+            const endPage = Math.min(startPage + maxVisiblePages - 1, totalPages);
+
+            for (let page = startPage; page <= endPage; page++) {
+                const pageElement = document.createElement('span');
+                pageElement.textContent = page;
+                pageElement.className = page === currentPage ? 'mactive' : '';
+                pageElement.classList.add("monc");
+                pageElement.addEventListener('click', () => onPageClick(page));
+                paginationContainer.appendChild(pageElement);
+            }
+
+            if (startPage > 1) {
+                const prevDots = document.createElement('span');
+                prevDots.textContent = '...';
+                prevDots.className = 'dots';
+                paginationContainer.insertBefore(prevDots, paginationContainer.firstChild);
+            }
+            if (endPage < totalPages) {
+                const nextDots = document.createElement('span');
+                nextDots.textContent = '...';
+                nextDots.className = 'dots';
+                paginationContainer.appendChild(nextDots);
+            }
+            
+        }
+
+        function onPageClick(page) {
+            currentPage = page;
+            console.log(currentPage)
+            const getSpin = document.querySelector(".pagemodal");
+            getSpin.style.display = "block";
+
+            const coTok = localStorage.getItem("adminLogin");
+            const gData = JSON.parse(coTok);
+            const goData = gData.token;
+
+
+            const gHeader = new Headers();
+            gHeader.append('Content-Type', 'application/json');
+            gHeader.append("Authorization", `Bearer ${goData}`);
+
+
+            const gReq = {
+                method: 'GET',
+                headers: gHeader,
+            };
+
+            let data2 = [];
+
+            const url = `https://backend.pluralcode.institute/advisor/get-booked-sessions?course=${course}&page=${currentPage}`;
+
+           fetch(url, gReq)
+           .then(response => response.json())
+           .then(result => {
+               console.log(result)
+               result.advisorydata.data.map((item) => {
+                data2 += `
+                  <tr>
+                     <td>${item.date}</td>
+                     <td>${item.name}</td>
+                     <td>${item.email}</td>
+                     <td>${item.phone_number}</td>
+                     <td>${item.course_interested_in}</td>
+                     <td>${item.time}</td>
+                     <td>${item.year}</td>
+                     <td>${item.month}</td>
+                     <td><button class="${item.status}">${item.status}</button></td>
+                  </tr>
+                `
+                myTable2.innerHTML = data2;
+                getSpin.style.display = "none";
+            })
+           })
+           .catch(error => console.log('error', error));
+            createPagination()
+        }
+
+        createPagination();
         
     })
     .catch(error => console.log('error', error));
