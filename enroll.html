@@ -16,7 +16,7 @@
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 </head>
-<body>
+<body onload="adEnroll(), dashBoardDetails()">
     <div class="pagemodal">
         <div class="preloader">
             <svg width="200" height="200" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid" class="lds-ripple" style="background:0 0"><circle cx="50" cy="50" r="4.719" fill="none" stroke="#1d3f72" stroke-width="2"><animate attributeName="r" calcMode="spline" values="0;40" keyTimes="0;1" dur="3" keySplines="0 0.2 0.8 1" begin="-1.5s" repeatCount="indefinite"/><animate attributeName="opacity" calcMode="spline" values="1;0" keyTimes="0;1" dur="3" keySplines="0.2 0 0.8 1" begin="-1.5s" repeatCount="indefinite"/></circle><circle cx="50" cy="50" r="27.591" fill="none" stroke="#5699d2" stroke-width="2"><animate attributeName="r" calcMode="spline" values="0;40" keyTimes="0;1" dur="3" keySplines="0 0.2 0.8 1" begin="0s" repeatCount="indefinite"/><animate attributeName="opacity" calcMode="spline" values="1;0" keyTimes="0;1" dur="3" keySplines="0.2 0 0.8 1" begin="0s" repeatCount="indefinite"/></circle></svg>
@@ -46,15 +46,7 @@
            <li>
             <a href="enroll.html" class="active" style="text-decoration: none;"><i class="fa fa-user mr-2" style="color: #fff;"></i><span>Enrolled</span></a>
            </li>
-           <li>
-            <a href="interest.html" style="text-decoration: none;"><i class="fa fa-user mr-2" style="color: #fff;"></i><span>Interested</span></a>
-          </li>
-          <li>
-            <a href="weekly.html" style="text-decoration: none;"><i class="fa fa-calendar mr-2" style="color: #fff;"></i><span>Weekly Summary</span></a>
-        </li>
-        <li>
-            <a href="visit.html" style="text-decoration: none;"><i class="fa fa-book mr-2" style="color: #fff;"></i><span>Booked Visit</span></a>
-        </li>
+           
           <li>
             <a href="settings.html"  style="text-decoration: none;"><i class="fa fa-cog mr-2" style="color: #fff;"></i><span>Settings</span></a>
           </li><br><br><br><br><br><br><br>
@@ -67,55 +59,78 @@
 
     <div class="main-content">
        <header>
-           <h2>
-                <label for="nav-toggle">
-                    <i class="fa fa-bars"></i>
-                </label>
-           </h2>
-           <div class="head-shift">
-               <form class="theForm">
-                <div class="input-group rounded">
-                    <input type="search" class="form-control rounded nsearch" placeholder="Search" aria-label="Search" aria-describedby="search-addon" />
-                    <span class="input-group-text border-0" id="search-addon">
-                    <i class="fas fa-search" onclick="searchName(event)"></i>
-                    </span>
-                </div>
-               </form>
-               <form>
-                    <!-- <label class="label">Course</label> -->
-                    <select class="form-control spincourse" id="input" onchange="getTypeCourse(event)">
-                    </select>
-               </form>
-           </div>
+        <div class="ripus">
+            <div class="d-flex">
+                <h2>
+                    <label for="nav-toggle">
+                        <i class="fa fa-bars"></i>
+                    </label>
+                </h2>
+                <h2 class="adname ml-3"></h2>
+            </div>
+        
+
+            <div class="detail-section mt-2">
+                <p class="rc mr-5"></p>
+                <p class="position"></p>
+            </div>
+       </div>
         </header>
 
        <main>
-          <div class="jumbotron bg-light">
-            <h3 class="en-text">Enrolled Students</h3>
-              <div class="head-shift2">
-                    <div class="dashSelectBox mt-3">
-                        Start Date
-                        <input type="date" name="myDate" class="start">
-                    </div>
-                    <div class="dashSelectBox mt-3">
-                        End Date
-                        <input type="date" name="myDate" class="end">
-                    </div>
-                    <div class="dashSelectBox mt-3">
-                        <button class="sort-btn" onclick="searchDate()">sort by range</button>
-                    </div>
+          <div class="jumbotron bg-light mt-3">
+            <div class="detail-section2 mt-2">
+                <p class="rc2 mr-5"></p>
+                <p class="position2"></p>
+            </div>
+              <div class="front d-flex justify-content-between">
+                <h3 class="en-text">Enrolled Students</h3>
+                <form>
+                    <select class="form-control spincourse" id="input">
+                    </select>
+                </form>
               </div>
+            
+            <form>
+                <div class="row mt-3">
+                    <div class="col-sm-12 col-md-12 col-lg-6">
+                        <label for="">Start date</label>
+                        <input type="date" name="myDate" class="mb-2 form-control start">
+                    </div>
+                    <div class="col-sm-12 col-md-12 col-lg-6">
+                        <div class="dashSelectBox">
+                            
+                            <label for="">End date</label>
+                            <input type="date" name="myDate" class="mb-2 form-control end">
+                        </div>
+                    </div>
+               </div>
+               <center>
+                 <button class="sort-btn" onclick="searchEnrolled(event)">sort by range</button>
+               </center>
+            </form>
                 <div class="outer-wrapper mt-5">
                     <div class="table-wrapper">
                         <table class="table">
                             <thead>
                                 <tr>
-                                    <th class="thText">Student Name</th>
-                                    <th class="thText">Email Address</th>
-                                    <th class="thText">Phone</th>
-                                    <th class="thText">Date</th>
-                                    <th class="thText">Mode Of Learning</th>
-                                    <th class="thText">Course Of Interest</th>
+                                    <th>Course Name</th>
+                                    <th>Email</th>
+                                    <th>Phone Number</th>
+                                    <th>Country</th>
+                                    <th>state</th>
+                                    <th>Level Of Education</th>
+                                    <th>program Type</th>
+                                    <th>Age Range</th>
+                                    <th>Amount Paid</th>
+                                    <th>Balance</th>
+                                    <th>Currency</th>
+                                    <th>Mode Of Learning</th>
+                                    <th>Course Of Interest</th>
+                                    <th>Payment Plan</th>
+                                    <th>Registration Number</th>
+                                    <th>Date</th>
+                                    <th>Pament Status</th>
                                 </tr>
                             </thead>
                             <tbody class="tableData">
@@ -123,6 +138,11 @@
                             </tbody>
                         </table>
                     </div>
+                    <nav class="mt-5 mio">
+                        <ul class="pagination pg-blue justify-content-center">
+                            <div id="pagination-container" class="wesg"></div>
+                        </ul>
+                    </nav>
                 </div>
           </div>
        </main>

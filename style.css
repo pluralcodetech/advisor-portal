@@ -15,6 +15,8 @@ body {
     margin: 0;
 }
 
+
+
 .sidebar {
     width: 345px;
     position: fixed;
@@ -116,13 +118,37 @@ header {
     transition: left 300ms;
 }
 
-.ripus, .detail-section {
+.ripus, .detail-section, .detail-section2 {
     display: flex;
     justify-content: space-between;
 }
 
-.detail-section p {
+.detail-section p, .detail-section2 p {
     font-weight: 900;
+}
+
+.detail-section2 {
+    display: none;
+}
+
+@media screen and (max-width: 650px) {
+    .detail-section {
+        display: none;
+    }
+
+    .detail-section2 {
+        display: block;
+    }
+
+    header h2 {
+        display: block !important;
+    }
+}
+
+@media screen and (min-width: 700px) and (max-width: 1000px) {
+    header h2 {
+        display: block !important;
+    }
 }
 
 #nav-toggle {
@@ -141,8 +167,8 @@ header label span {
 
 
 main {
-    margin-top: 85px;
-    padding: 2rem 1.5rem;
+    margin-top: 65px;
+    padding: 0.5rem 1.5rem;
     background: #e8e4fd;
     min-height: calc(200vh - 50px);
 }
@@ -284,7 +310,7 @@ main {
 
 .card-body p {
  font-weight: 600;
- font-size: 12px;
+ font-size: 16px;
  color: rgba(0, 0, 0, 0.7);
 }
 
@@ -354,6 +380,12 @@ table {
     margin-top: 3px;
 }
 
+.mactive2 {
+    background: green;
+    color: #fff;
+    border-radius: 5px;
+    margin-top: 3px;
+}
 
 
 table th{
@@ -398,9 +430,6 @@ table td:nth-child(9) {
     text-align: left;
 }
 
-.entor {
-
-}
 
 .mimipara {
     padding: 5px 15px;
@@ -602,7 +631,7 @@ hr {
 
 .head-shift2 {
     display: flex;
-    justify-content: flex-end;
+    /* justify-content: flex-end; */
     column-gap: 50px;
 }
 
@@ -681,7 +710,8 @@ hr {
     border-radius: 5px;
 }
 
-.complete, .pending, .un-paid, .interested, .unreachable, .active, .dele-btn, .assigned, .undecided, .not_interested, .enrolled, .next {
+.complete, .pending, .un-paid, .interested, .unreachable, .active, .dele-btn, 
+.assigned, .undecided, .not_interested, .enrolled, .next, .Complete, .Incomplete {
     background-color: green;
     color: #fff;
     padding: 5px 10px;
@@ -691,7 +721,7 @@ hr {
     border-radius: 5px;
 }
 
-.pending {
+.pending, .Incomplete {
     background-color: red;
 }
 
