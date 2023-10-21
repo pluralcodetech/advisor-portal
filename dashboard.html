@@ -48,6 +48,9 @@
              <a href="enroll.html" style="text-decoration: none;"><i class="fa fa-user mr-2" style="color: #fff;"></i><span>Enrolled</span></a>
             </li>
             <li>
+                <a href="interest.html" style="text-decoration: none;"><i class="fa fa-user mr-2" style="color: #fff;"></i><span>Interested</span></a>
+               </li>
+            <li>
                 <a href="settings.html"  style="text-decoration: none;"><i class="fa fa-cog mr-2" style="color: #fff;"></i><span>Settings</span></a>
               </li><br><br><br><br><br><br><br>
             <li>
@@ -61,21 +64,20 @@
        <header>
            <div class="ripus">
                 <div class="d-flex">
-                    <h2>
+                    <h2 class="cn">
                         <label for="nav-toggle">
                             <i class="fa fa-bars"></i>
                         </label>
                     </h2>
-                    <h2 class="adname ml-3"></h2>
-                </div>
-            
-
-                <div class="detail-section mt-2">
-                    <p class="rc mr-5"></p>
-                    <p class="position"></p>
+                    <h4 class="adname ml-3 mt-1"></h4>
+                    <p class="rc ml-5 mt-2"></p>
+                    <div class="text-right mt-1 ml-5">
+                        <small class="co">copied</small>
+                        <i class="fas fa-copy fal" onclick="getTheText(event)" title="copy link"></i>
+                    </div>
                 </div>
            </div>
-        </header>
+      </header>
 
        <main>
         <div id="re-modal" class="mymodal mb-5">
@@ -101,13 +103,14 @@
 
 
           <div class="jumbotron bg-light">
+            <h4 class="position"></h4>
+
             <div class="detail-section2 mt-2">
                 <p class="rc2 mr-5"></p>
-                <p class="position2"></p>
+                <!-- <p class="position2"></p> -->
             </div>
               <div class="head-shift">
-                  <button class="pro-btn" onclick="viewModal(event)">create prospect profile</button>
-                
+                  <!-- <button class="pro-btn" onclick="viewModal(event)">create prospect profile</button> -->
                 <form>
                     <select class="form-control spincourse" id="input">
                     </select>
@@ -145,7 +148,7 @@
                                 <th>Time</th>
                                 <th>Year</th>
                                 <th>Month</th>
-                                <th>Status</th>
+                                <th>Update Status</th>
                             </tr>
                         </thead>
                         <tbody class="tableindex">
