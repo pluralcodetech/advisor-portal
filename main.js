@@ -1296,6 +1296,152 @@ function getInterest() {
     
 }
 
+function getProcess() {
+    const tableIndex = document.querySelector(".tableDataProcess");
+    const paginationContainer = document.getElementById('pagination-container');
+
+    const myModal = document.querySelector(".pagemodal");
+    myModal.style.display = "block";
+
+
+    const etdash = localStorage.getItem("adminLogin");
+    const cmdash2 = JSON.parse(etdash);
+    const cmdash3 = cmdash2.token;
+
+    const pv = new Headers();
+    pv.append('Content-Type', 'application/json');
+    pv.append("Authorization", `Bearer ${cmdash3}`);
+
+    const cardMethod = {
+        method: 'GET',
+        headers: pv
+    }
+
+    let dataItem = [];
+
+    const url = `https://backend.pluralcode.institute/advisor/get-booked-sessions?advisory_status=processing`;
+
+    fetch(url, cardMethod)
+    .then(response => response.json())
+    .then(result => {
+        console.log(result)
+        if (result.advisorydata.data.length === 0) {
+            tableIndex.innerHTML = "No Records Found!";
+            myModal.style.display = "none";
+        }
+        else {
+            result.advisorydata.data.map((item) => {
+                dataItem += `
+                  <tr>
+                     <td>${item.date}</td>
+                     <td>${item.name}</td>
+                     <td>${item.email}</td>
+                     <td>${item.phone_number}</td>
+                     <td>${item.course_interested_in}</td>
+                     <td>${item.time}</td>
+                     <td>${item.year}</td>
+                     <td>${item.month}</td>
+                     <td>
+                      <button class=${item.status}>${item.status}</button>
+                     </td>
+                  </tr>
+                `
+                tableIndex.innerHTML = dataItem;
+                myModal.style.display = "none";
+            })
+        }
+
+        let totalPages = result.advisorydata.total_pages;
+        let currentPage = result.advisorydata.page;
+        let maxVisiblePages = 5;
+
+        function createPagination() {
+            paginationContainer.innerHTML = '';
+
+            const startPage = Math.max(currentPage - Math.floor(maxVisiblePages / 2), 1);
+            const endPage = Math.min(startPage + maxVisiblePages - 1, totalPages);
+
+            for (let page = startPage; page <= endPage; page++) {
+                const pageElement = document.createElement('span');
+                pageElement.textContent = page;
+                pageElement.className = page === currentPage ? 'mactive3' : '';
+                pageElement.classList.add("monc");
+                pageElement.addEventListener('click', () => onPageClick(page));
+                paginationContainer.appendChild(pageElement);
+            }
+
+            if (startPage > 1) {
+                const prevDots = document.createElement('span');
+                prevDots.textContent = '...';
+                prevDots.className = 'dots';
+                paginationContainer.insertBefore(prevDots, paginationContainer.firstChild);
+            }
+            if (endPage < totalPages) {
+                const nextDots = document.createElement('span');
+                nextDots.textContent = '...';
+                nextDots.className = 'dots';
+                paginationContainer.appendChild(nextDots);
+            }
+            
+        }
+
+        function onPageClick(page) {
+            currentPage = page;
+            console.log(currentPage)
+            const getSpin = document.querySelector(".pagemodal");
+            getSpin.style.display = "block";
+
+            const etdash = localStorage.getItem("adminLogin");
+            const cmdash2 = JSON.parse(etdash);
+            const cmdash3 = cmdash2.token;
+
+            const pv = new Headers();
+            pv.append('Content-Type', 'application/json');
+            pv.append("Authorization", `Bearer ${cmdash3}`);
+
+            const cardMethod = {
+                method: 'GET',
+                headers: pv
+            }
+
+            let data3 = [];
+
+            const url = `https://backend.pluralcode.institute/advisor/get-booked-sessions?advisory_status=processing&page=${currentPage}`;
+
+           fetch(url, cardMethod)
+           .then(response => response.json())
+           .then(result => {
+               console.log(result)
+               result.advisorydata.data.map((item) => {
+                data3 += `
+                  <tr>
+                    <td>${item.date}</td>
+                    <td>${item.name}</td>
+                    <td>${item.email}</td>
+                    <td>${item.phone_number}</td>
+                    <td>${item.course_interested_in}</td>
+                    <td>${item.time}</td>
+                    <td>${item.year}</td>
+                    <td>${item.month}</td>
+                    <td>
+                    <button class=${item.status}>${item.status}</button>
+                    </td>
+                  </tr>
+                `
+                tableIndex.innerHTML = data3;
+                getSpin.style.display = "none";
+            })
+           })
+           .catch(error => console.log('error', error));
+            createPagination()
+        }
+
+        createPagination();
+    })
+    .catch(error => console.log('error', error));
+    
+}
+
 // function to search  interest by name
 function searchName2(event) {
     event.preventDefault();
@@ -2590,6 +2736,7 @@ function searchInterested(event) {
     pageModal.style.display = "block";
 
     const tableItem = document.querySelector(".tableDataInterest");
+    const mio = document.querySelector(".mio");
 
     const getCourse = document.querySelector(".spincourse").value;
     const getStart = document.querySelector(".start").value;
@@ -2619,6 +2766,7 @@ function searchInterested(event) {
 
         if (result.message === "No course record found") {
             tableItem.innerHTML = `${result.message}`;
+            mio.style.display = "none";
             pageModal.style.display = "none";
         }
         else {
@@ -2629,7 +2777,7 @@ function searchInterested(event) {
                         <td>${item.name}</td>
                         <td>${item.email}</td>
                         <td>${item.phone_number}</td>
-                        <td>${item.course_interest_in}</td>
+                        <td>${item.course_interested_in}</td>
                         <td>${item.month}</td>
                         <td>${item.time}</td>
                         <td>${item.year}</td>
@@ -2637,7 +2785,7 @@ function searchInterested(event) {
                     </tr>
                 `
                 tableItem.innerHTML = data;
-                
+                mio.style.display = "block";
                 pageModal.style.display = "none";
             })
         }
@@ -2692,33 +2840,172 @@ function searchInterested(event) {
 
             let data3 = [];
 
-            const url = `https://backend.pluralcode.institute/advisor/enrollments?course=${getCourse}&start_date=${getStart}&end_date=${getEnd}&page=${currentPage}`;
+            const url = `https://backend.pluralcode.institute/advisor/get-booked-sessions?course=${getCourse}&advisory_status=interested&start_date=${getStart}&end_date=${getEnd}&page=${currentPage}`;
 
            fetch(url, bvReq)
            .then(response => response.json())
            .then(result => {
                console.log(result)
-               result.data.data.map((item) => {
+               result.advisorydata.data.map((item) => {
                 data3 += `
-                   <tr>
-                      <td>${item.name}</td>
-                      <td>${item.email}</td>
-                      <td>${item.phone_number}</td>
-                      <td>${item.country}</td>
-                      <td>${item.state}</td>
-                      <td>${item.level_of_education}</td>
-                      <td>${item.program_type}</td>
-                      <td>${item.age}</td>
-                      <td>${item.amount_paid}</td>
-                      <td>${item.balance}</td>
-                      <td>${item.currency}</td>
-                      <td>${item.mode_of_learning}</td>
-                      <td>${item.course_of_interest}</td>
-                      <td>${item.payment_plan}</td>
-                      <td>${item.registeration_number}</td>
-                      <td>${item.date}</td>
-                      <td><button class=${item.payment_status}>${item.payment_status}</button></td>
-                   </tr>
+                <tr>
+                    <td>${item.date}</td>
+                    <td>${item.name}</td>
+                    <td>${item.email}</td>
+                    <td>${item.phone_number}</td>
+                    <td>${item.course_interested_in}</td>
+                    <td>${item.month}</td>
+                    <td>${item.time}</td>
+                    <td>${item.year}</td>
+                    <td><button class=${item.status}>${item.status}</button></td>
+                </tr>
+                `
+                tableItem.innerHTML = data3;
+                pageModal.style.display = "none";
+            })
+           })
+           .catch(error => console.log('error', error));
+            createPagination()
+        }
+
+        createPagination();
+
+    })
+    .catch(error => console.log('error', error));
+}
+
+function searchProcess(event) {
+    event.preventDefault();
+    const paginationContainer = document.getElementById('pagination-container');
+
+    const pageModal = document.querySelector(".pagemodal");
+    pageModal.style.display = "block";
+
+    const tableItem = document.querySelector(".tableDataProcess");
+    const mio = document.querySelector(".mio");
+
+
+    const getCourse = document.querySelector(".spincourse").value;
+    const getStart = document.querySelector(".start").value;
+    const getEnd = document.querySelector(".end").value;
+
+    const coTok = localStorage.getItem("adminLogin");
+    const gData = JSON.parse(coTok);
+    const goData = gData.token;
+
+    const bv = new Headers();
+    bv.append('Content-Type', 'application/json');
+    bv.append("Authorization", `Bearer ${goData}`);
+
+    const bvReq = {
+        method: 'GET',
+        headers: bv
+    };
+
+    let data = [];
+
+    const url = `https://backend.pluralcode.institute/advisor/get-booked-sessions?course=${getCourse}&advisory_status=processing&start_date=${getStart}&end_date=${getEnd}`;
+
+    fetch(url, bvReq)
+    .then(response => response.json())
+    .then(result => {
+        console.log(result)
+
+        if (result.message === "No book session found") {
+            tableItem.innerHTML = `${result.message}`;
+            mio.style.display = "none";
+            pageModal.style.display = "none";
+        }
+        else {
+            result.advisorydata.data.map((item) => {
+                data += `
+                    <tr>
+                        <td>${item.date}</td>
+                        <td>${item.name}</td>
+                        <td>${item.email}</td>
+                        <td>${item.phone_number}</td>
+                        <td>${item.course_interested_in}</td>
+                        <td>${item.month}</td>
+                        <td>${item.time}</td>
+                        <td>${item.year}</td>
+                        <td><button class=${item.status}>${item.status}</button></td>
+                    </tr>
+                `
+                tableItem.innerHTML = data;
+                mio.style.display = "block";
+                pageModal.style.display = "none";
+            })
+        }
+
+        let totalPages = result.advisorydata.total_pages;
+        let currentPage = result.advisorydata.page;
+        let maxVisiblePages = 5;
+
+        function createPagination() {
+            paginationContainer.innerHTML = '';
+
+            const startPage = Math.max(currentPage - Math.floor(maxVisiblePages / 2), 1);
+            const endPage = Math.min(startPage + maxVisiblePages - 1, totalPages);
+
+            for (let page = startPage; page <= endPage; page++) {
+                const pageElement = document.createElement('span');
+                pageElement.textContent = page;
+                pageElement.className = page === currentPage ? 'mactive2' : '';
+                pageElement.classList.add("monc");
+                pageElement.addEventListener('click', () => onPageClick(page));
+                paginationContainer.appendChild(pageElement);
+            }
+
+            if (startPage > 1) {
+                const prevDots = document.createElement('span');
+                prevDots.textContent = '...';
+                prevDots.className = 'dots';
+                paginationContainer.insertBefore(prevDots, paginationContainer.firstChild);
+            }
+            if (endPage < totalPages) {
+                const nextDots = document.createElement('span');
+                nextDots.textContent = '...';
+                nextDots.className = 'dots';
+                paginationContainer.appendChild(nextDots);
+            }
+            
+        }
+        function onPageClick(page) {
+            currentPage = page;
+            console.log(currentPage)
+            const getSpin = document.querySelector(".pagemodal");
+            getSpin.style.display = "block";
+
+            const bv = new Headers();
+            bv.append('Content-Type', 'application/json');
+            bv.append("Authorization", `Bearer ${goData}`);
+
+            const bvReq = {
+                method: 'GET',
+                headers: bv
+            };
+
+            let data3 = [];
+
+            const url = `https://backend.pluralcode.institute/advisor/get-booked-sessions?course=${getCourse}&advisory_status=processing&start_date=${getStart}&end_date=${getEnd}&page=${currentPage}`;
+
+           fetch(url, bvReq)
+           .then(response => response.json())
+           .then(result => {
+               console.log(result)
+               result.advisorydata.data.map((item) => {
+                data3 += `
+                <tr>
+                    <td>${item.date}</td>
+                    <td>${item.name}</td>
+                    <td>${item.email}</td>
+                    <td>${item.phone_number}</td>
+                    <td>${item.course_interested_in}</td>
+                    <td>${item.month}</td>
+                    <td>${item.time}</td>
+                    <td>${item.year}</td>
+                    <td><button class=${item.status}>${item.status}</button></td>
+                </tr>
                 `
                 tableItem.innerHTML = data3;
                 pageModal.style.display = "none";
