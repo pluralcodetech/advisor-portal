@@ -1195,9 +1195,14 @@ function getInterest() {
                      <td>${item.time}</td>
                      <td>${item.year}</td>
                      <td>${item.month}</td>
-                     <td>
-                      <button class=${item.status}>${item.status}</button>
-                     </td>
+                     <td><i style="color: #25d366;" class="fab fa-whatsapp fa-2x text-center" onclick="gotoWhatsap(${item.phone_number})"></i></td>
+                    <td>
+                    <div class="d-flex justify-content-between">
+                    <button class="interested mr-3">Interested</button>
+                    <button class="processing mr-3" onclick="getProcessing('processing', ${item.id})">Processing</button>
+                    <button class="not-interested" onclick="getNotInterested(${item.id})">Not Interested</button>
+                    </div>
+                    </td>
                   </tr>
                 `
                 tableIndex.innerHTML = dataItem;
@@ -1277,8 +1282,13 @@ function getInterest() {
                     <td>${item.time}</td>
                     <td>${item.year}</td>
                     <td>${item.month}</td>
+                    <td><i style="color: #25d366;" class="fab fa-whatsapp fa-2x text-center" onclick="gotoWhatsap(${item.phone_number})"></i></td>
                     <td>
-                    <button class=${item.status}>${item.status}</button>
+                    <div class="d-flex justify-content-between">
+                    <button class="interested mr-3" onclick="getInterested('interested', ${item.id})">Interested</button>
+                    <button class="processing mr-3" onclick="getProcessing('processing', ${item.id})">Processing</button>
+                    <button class="not-interested" onclick="getNotInterested(${item.id})">Not Interested</button>
+                    </div>
                     </td>
                   </tr>
                 `
@@ -1341,8 +1351,13 @@ function getProcess() {
                      <td>${item.time}</td>
                      <td>${item.year}</td>
                      <td>${item.month}</td>
+                     <td><i style="color: #25d366;" class="fab fa-whatsapp fa-2x text-center" onclick="gotoWhatsap(${item.phone_number})"></i></td>
                      <td>
-                      <button class=${item.status}>${item.status}</button>
+                      <div class="d-flex justify-content-between">
+                        <button class="processing mr-3">Processing</button>
+                        <button class="interested mr-3" onclick="getInterested('interested', ${item.id})">Interested</button>
+                        <button class="not-interested" onclick="getNotInterested(${item.id})">Not Interested</button>
+                      </div>
                      </td>
                   </tr>
                 `
@@ -1423,9 +1438,170 @@ function getProcess() {
                     <td>${item.time}</td>
                     <td>${item.year}</td>
                     <td>${item.month}</td>
-                    <td>
-                    <button class=${item.status}>${item.status}</button>
-                    </td>
+                    <td><i style="color: #25d366;" class="fab fa-whatsapp fa-2x text-center" onclick="gotoWhatsap(${item.phone_number})"></i></td>
+                     <td>
+                      <div class="d-flex justify-content-between">
+                        <button class="processing mr-3">Processing</button>
+                        <button class="interested mr-3" onclick="getInterested('interested', ${item.id})">Interested</button>
+                        <button class="not-interested" onclick="getNotInterested(${item.id})">Not Interested</button>
+                      </div>
+                     </td>
+                  </tr>
+                `
+                tableIndex.innerHTML = data3;
+                getSpin.style.display = "none";
+            })
+           })
+           .catch(error => console.log('error', error));
+            createPagination()
+        }
+
+        createPagination();
+    })
+    .catch(error => console.log('error', error));
+    
+}
+
+function getNot() {
+    const tableIndex = document.querySelector(".tableDataNot");
+    const paginationContainer = document.getElementById('pagination-container');
+
+    const myModal = document.querySelector(".pagemodal");
+    myModal.style.display = "block";
+
+
+    const etdash = localStorage.getItem("adminLogin");
+    const cmdash2 = JSON.parse(etdash);
+    const cmdash3 = cmdash2.token;
+
+    const pv = new Headers();
+    pv.append('Content-Type', 'application/json');
+    pv.append("Authorization", `Bearer ${cmdash3}`);
+
+    const cardMethod = {
+        method: 'GET',
+        headers: pv
+    }
+
+    let dataItem = [];
+
+    const url = `https://backend.pluralcode.institute/advisor/get-booked-sessions?advisory_status=not-interested`;
+
+    fetch(url, cardMethod)
+    .then(response => response.json())
+    .then(result => {
+        console.log(result)
+        if (result.advisorydata.data.length === 0) {
+            tableIndex.innerHTML = "No Records Found!";
+            myModal.style.display = "none";
+        }
+        else {
+            result.advisorydata.data.map((item) => {
+                dataItem += `
+                  <tr>
+                     <td>${item.date}</td>
+                     <td>${item.name}</td>
+                     <td>${item.email}</td>
+                     <td>${item.phone_number}</td>
+                     <td>${item.course_interested_in}</td>
+                     <td>${item.time}</td>
+                     <td>${item.year}</td>
+                     <td>${item.month}</td>
+                     <td><i style="color: #25d366;" class="fab fa-whatsapp fa-2x text-center" onclick="gotoWhatsap(${item.phone_number})"></i></td>
+                     <td>
+                      <div class="d-flex justify-content-between">
+                        <button class="not-interested mr-3">Not Interested</button>
+                        <button class="interested mr-3" onclick="getInterested('interested', ${item.id})">Interested</button>
+                        <button class="processing mr-3" onclick="getProcessing('processing', ${item.id})">Processing</button>
+                      </div>
+                     </td>
+                  </tr>
+                `
+                tableIndex.innerHTML = dataItem;
+                myModal.style.display = "none";
+            })
+        }
+
+        let totalPages = result.advisorydata.total_pages;
+        let currentPage = result.advisorydata.page;
+        let maxVisiblePages = 5;
+
+        function createPagination() {
+            paginationContainer.innerHTML = '';
+
+            const startPage = Math.max(currentPage - Math.floor(maxVisiblePages / 2), 1);
+            const endPage = Math.min(startPage + maxVisiblePages - 1, totalPages);
+
+            for (let page = startPage; page <= endPage; page++) {
+                const pageElement = document.createElement('span');
+                pageElement.textContent = page;
+                pageElement.className = page === currentPage ? 'mactive3' : '';
+                pageElement.classList.add("monc");
+                pageElement.addEventListener('click', () => onPageClick(page));
+                paginationContainer.appendChild(pageElement);
+            }
+
+            if (startPage > 1) {
+                const prevDots = document.createElement('span');
+                prevDots.textContent = '...';
+                prevDots.className = 'dots';
+                paginationContainer.insertBefore(prevDots, paginationContainer.firstChild);
+            }
+            if (endPage < totalPages) {
+                const nextDots = document.createElement('span');
+                nextDots.textContent = '...';
+                nextDots.className = 'dots';
+                paginationContainer.appendChild(nextDots);
+            }
+            
+        }
+
+        function onPageClick(page) {
+            currentPage = page;
+            console.log(currentPage)
+            const getSpin = document.querySelector(".pagemodal");
+            getSpin.style.display = "block";
+
+            const etdash = localStorage.getItem("adminLogin");
+            const cmdash2 = JSON.parse(etdash);
+            const cmdash3 = cmdash2.token;
+
+            const pv = new Headers();
+            pv.append('Content-Type', 'application/json');
+            pv.append("Authorization", `Bearer ${cmdash3}`);
+
+            const cardMethod = {
+                method: 'GET',
+                headers: pv
+            }
+
+            let data3 = [];
+
+            const url = `https://backend.pluralcode.institute/advisor/get-booked-sessions?advisory_status=not-interested&page=${currentPage}`;
+
+           fetch(url, cardMethod)
+           .then(response => response.json())
+           .then(result => {
+               console.log(result)
+               result.advisorydata.data.map((item) => {
+                data3 += `
+                  <tr>
+                    <td>${item.date}</td>
+                    <td>${item.name}</td>
+                    <td>${item.email}</td>
+                    <td>${item.phone_number}</td>
+                    <td>${item.course_interested_in}</td>
+                    <td>${item.time}</td>
+                    <td>${item.year}</td>
+                    <td>${item.month}</td>
+                    <td><i style="color: #25d366;" class="fab fa-whatsapp fa-2x text-center" onclick="gotoWhatsap(${item.phone_number})"></i></td>
+                     <td>
+                      <div class="d-flex justify-content-between">
+                        <button class="not-interested mr-3">Not Interested</button>
+                        <button class="interested mr-3" onclick="getInterested('interested', ${item.id})">Interested</button>
+                        <button class="processing mr-3" onclick="getProcessing('processing', ${item.id})">Processing</button>
+                      </div>
+                     </td>
                   </tr>
                 `
                 tableIndex.innerHTML = data3;
@@ -1860,17 +2036,24 @@ function searchTheDate(event) {
         else {
             result.advisorydata.data.map((item) => {
                 daData += `
-                    <tr>
-                        <td>${item.date}</td>
-                        <td>${item.name}</td>
-                        <td>${item.email}</td>
-                        <td>${item.phone_number}</td>
-                        <td>${item.course_interested_in}</td>
-                        <td>${item.time}</td>
-                        <td>${item.year}</td>
-                        <td>${item.month}</td>
-                        <td><button class="${item.status}">${item.status}</button></td>
-                    </tr>
+                <tr>
+                <td>${item.date}</td>
+                <td>${item.name}</td>
+                <td>${item.email}</td>
+                <td>${item.phone_number}</td>
+                <td>${item.course_interested_in}</td>
+                <td>${item.time}</td>
+                <td>${item.year}</td>
+                <td>${item.month}</td>
+                <td><i style="color: #25d366;" class="fab fa-whatsapp fa-2x text-center" onclick="gotoWhatsap(${item.phone_number})"></i></td>
+                <td>
+                 <div class="d-flex justify-content-between">
+                   <button class="interested mr-3" onclick="getInterested('interested', ${item.id})">Interested</button>
+                   <button class="processing mr-3" onclick="getProcessing('processing', ${item.id})">Processing</button>
+                   <button class="not-interested" onclick="getNotInterested(${item.id})">Not Interested</button>
+                 </div>
+                </td>
+             </tr>
                 `
                 tableIndex.innerHTML = daData;
                 myModal.style.display = "none";
@@ -1955,17 +2138,24 @@ function searchTheDate(event) {
                console.log(result)
                result.advisorydata.data.map((item) => {
                 data3 += `
-                  <tr>
-                     <td>${item.date}</td>
-                     <td>${item.name}</td>
-                     <td>${item.email}</td>
-                     <td>${item.phone_number}</td>
-                     <td>${item.course_interested_in}</td>
-                     <td>${item.time}</td>
-                     <td>${item.year}</td>
-                     <td>${item.month}</td>
-                     <td><button class="${item.status}">${item.status}</button></td>
-                  </tr>
+                <tr>
+                <td>${item.date}</td>
+                <td>${item.name}</td>
+                <td>${item.email}</td>
+                <td>${item.phone_number}</td>
+                <td>${item.course_interested_in}</td>
+                <td>${item.time}</td>
+                <td>${item.year}</td>
+                <td>${item.month}</td>
+                <td><i style="color: #25d366;" class="fab fa-whatsapp fa-2x text-center" onclick="gotoWhatsap(${item.phone_number})"></i></td>
+                <td>
+                 <div class="d-flex justify-content-between">
+                   <button class="interested mr-3" onclick="getInterested('interested', ${item.id})">Interested</button>
+                   <button class="processing mr-3" onclick="getProcessing('processing', ${item.id})">Processing</button>
+                   <button class="not-interested" onclick="getNotInterested(${item.id})">Not Interested</button>
+                 </div>
+                </td>
+             </tr>
                 `
                 tableIndex.innerHTML = data3;
                 getSpin.style.display = "none";
@@ -3021,84 +3211,154 @@ function searchProcess(event) {
     .catch(error => console.log('error', error));
 }
 
-// function to create prospect
-function createProspect(event) {
+function searchNotInterest(event) {
     event.preventDefault();
+    const paginationContainer = document.getElementById('pagination-container');
 
-    const getSpin = document.querySelector(".spin");
-    getSpin.style.display = "inline-block";
+    const pageModal = document.querySelector(".pagemodal");
+    pageModal.style.display = "block";
 
-    const etdash = localStorage.getItem("adminLogin");
-    const cmdash2 = JSON.parse(etdash);
-    const cmdash3 = cmdash2.token;
-
-    const un = document.getElementById("uname").value;
-    const ue = document.getElementById("uemail").value;
-    const up = document.getElementById("uphone").value;
-    const ua = document.getElementById("uage").value;
-    const ui = document.getElementById("uinterest").value;
-    const ul = document.getElementById("ulocation").value;
-
-    if (un === "" || ue === "" || up === "" || ua === "" || ui === "" || ul === "") {
-        Swal.fire({
-            icon: 'info',
-            text: 'All fields are required...',
-            confirmButtonColor: '#0C1E5B'
-        })
-        getSpin.style.display = "none";
-    }
-
-    else {
+    const tableItem = document.querySelector(".tableDataNot");
+    const mio = document.querySelector(".mio");
 
 
-        const pv = new Headers();
-        pv.append("Authorization", `Bearer ${cmdash3}`);
+    const getCourse = document.querySelector(".spincourse").value;
+    const getStart = document.querySelector(".start").value;
+    const getEnd = document.querySelector(".end").value;
 
-        const pvReq = {
-            method: 'GET',
-            headers: pv,
-            // body: myform
-        };
+    const coTok = localStorage.getItem("adminLogin");
+    const gData = JSON.parse(coTok);
+    const goData = gData.token;
 
-        const url = `https://pluralcode.academy/pluralcode_apis/api/bot_create_advisory?name=${un}&email=${ue}&phone_number=${up}&age=${ua}&course_interested_in=${ui}&location=${ul}`;
-        fetch(url, pvReq)
-        .then(response => response.json())
-        .then(result => {
-            console.log(result)
-            if (result.status === "success") {
-                Swal.fire({
-                    icon: 'success',
-                    text: `${result.message}`,
-                    confirmButtonColor: '#0C1E5B'
-                })
+    const bv = new Headers();
+    bv.append('Content-Type', 'application/json');
+    bv.append("Authorization", `Bearer ${goData}`);
 
-                setTimeout(() => {
-                    location.reload();
-                }, 3000)
+    const bvReq = {
+        method: 'GET',
+        headers: bv
+    };
+
+    let data = [];
+
+    const url = `https://backend.pluralcode.institute/advisor/get-booked-sessions?course=${getCourse}&advisory_status=not-interested&start_date=${getStart}&end_date=${getEnd}`;
+
+    fetch(url, bvReq)
+    .then(response => response.json())
+    .then(result => {
+        console.log(result)
+
+        if (result.message === "No course record found") {
+            tableItem.innerHTML = `${result.message}`;
+            mio.style.display = "none";
+            pageModal.style.display = "none";
+        }
+        else {
+            result.advisorydata.data.map((item) => {
+                data += `
+                    <tr>
+                        <td>${item.date}</td>
+                        <td>${item.name}</td>
+                        <td>${item.email}</td>
+                        <td>${item.phone_number}</td>
+                        <td>${item.course_interested_in}</td>
+                        <td>${item.month}</td>
+                        <td>${item.time}</td>
+                        <td>${item.year}</td>
+                        <td><button class=${item.status}>${item.status}</button></td>
+                    </tr>
+                `
+                tableItem.innerHTML = data;
+                mio.style.display = "block";
+                pageModal.style.display = "none";
+            })
+        }
+
+        let totalPages = result.advisorydata.total_pages;
+        let currentPage = result.advisorydata.page;
+        let maxVisiblePages = 5;
+
+        function createPagination() {
+            paginationContainer.innerHTML = '';
+
+            const startPage = Math.max(currentPage - Math.floor(maxVisiblePages / 2), 1);
+            const endPage = Math.min(startPage + maxVisiblePages - 1, totalPages);
+
+            for (let page = startPage; page <= endPage; page++) {
+                const pageElement = document.createElement('span');
+                pageElement.textContent = page;
+                pageElement.className = page === currentPage ? 'mactive2' : '';
+                pageElement.classList.add("monc");
+                pageElement.addEventListener('click', () => onPageClick(page));
+                paginationContainer.appendChild(pageElement);
             }
-            else {
-                Swal.fire({
-                    icon: 'info',
-                    text: 'Unsuccessful',
-                    confirmButtonColor: '#0C1E5B'
-                })
-                getSpin.style.display = "none";
-            }
-        })
-        .catch(error => {
-            console.log('error', error)
-            if (error) {
-                Swal.fire({
-                    icon: 'info',
-                    text: error,
-                    confirmButtonColor: '#0C1E5B'
-                })
-                getSpin.style.display = "none";
-            }
-        });
-    }
 
+            if (startPage > 1) {
+                const prevDots = document.createElement('span');
+                prevDots.textContent = '...';
+                prevDots.className = 'dots';
+                paginationContainer.insertBefore(prevDots, paginationContainer.firstChild);
+            }
+            if (endPage < totalPages) {
+                const nextDots = document.createElement('span');
+                nextDots.textContent = '...';
+                nextDots.className = 'dots';
+                paginationContainer.appendChild(nextDots);
+            }
+            
+        }
+        function onPageClick(page) {
+            currentPage = page;
+            console.log(currentPage)
+            const getSpin = document.querySelector(".pagemodal");
+            getSpin.style.display = "block";
+
+            const bv = new Headers();
+            bv.append('Content-Type', 'application/json');
+            bv.append("Authorization", `Bearer ${goData}`);
+
+            const bvReq = {
+                method: 'GET',
+                headers: bv
+            };
+
+            let data3 = [];
+
+            const url = `https://backend.pluralcode.institute/advisor/get-booked-sessions?course=${getCourse}&advisory_status=not-interested&start_date=${getStart}&end_date=${getEnd}&page=${currentPage}`;
+
+           fetch(url, bvReq)
+           .then(response => response.json())
+           .then(result => {
+               console.log(result)
+               result.advisorydata.data.map((item) => {
+                data3 += `
+                <tr>
+                    <td>${item.date}</td>
+                    <td>${item.name}</td>
+                    <td>${item.email}</td>
+                    <td>${item.phone_number}</td>
+                    <td>${item.course_interested_in}</td>
+                    <td>${item.month}</td>
+                    <td>${item.time}</td>
+                    <td>${item.year}</td>
+                    <td><button class=${item.status}>${item.status}</button></td>
+                </tr>
+                `
+                tableItem.innerHTML = data3;
+                pageModal.style.display = "none";
+            })
+           })
+           .catch(error => console.log('error', error));
+            createPagination()
+        }
+
+        createPagination();
+
+    })
+    .catch(error => console.log('error', error));
 }
+
+
 
 // function to display cards
 function cardBooked() {
@@ -3170,6 +3430,7 @@ function cardBooked() {
                      <td>${item.time}</td>
                      <td>${item.year}</td>
                      <td>${item.month}</td>
+                     <td><i style="color: #25d366;" class="fab fa-whatsapp fa-2x text-center" onclick="gotoWhatsap(${item.phone_number})"></i></td>
                      <td>
                       <div class="d-flex justify-content-between">
                         <button class="interested mr-3" onclick="getInterested('interested', ${item.id})">Interested</button>
@@ -3256,6 +3517,7 @@ function cardBooked() {
                      <td>${item.time}</td>
                      <td>${item.year}</td>
                      <td>${item.month}</td>
+                     <td><i style="color: #25d366;" class="fab fa-whatsapp fa-2x text-center" onclick="gotoWhatsap(${item.phone_number})"></i></td>
                      <td>
                       <div class="d-flex justify-content-between">
                         <button class="interested mr-3" onclick="getInterested('interested', ${item.id})">Interested</button>
@@ -3571,6 +3833,10 @@ function adEnroll() {
         createPagination();
     })
     .catch(error => console.log('error', error));
+}
+
+function gotoWhatsap(phone) {
+    location.href = `https://wa.me/${phone}?text=my%20name%20is`, 'target_blank'
 }
 
 // function logout
